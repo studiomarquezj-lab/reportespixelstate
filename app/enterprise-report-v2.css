@@ -1,0 +1,3 @@
+/* Dedicated entrypoint to prevent an older deployment from reusing a stale CSS chunk. */
+@import './globals.css';
+@import './report-tabs.css';
