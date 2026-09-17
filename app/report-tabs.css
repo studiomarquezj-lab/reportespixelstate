@@ -1,0 +1,26 @@
+.report-tabs {
+  display: block !important;
+  width: 100%;
+}
+
+.report-tabs [data-slot='tabs-content'] {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .report-tabs [data-slot='tabs-list'] {
+    display: flex;
+    width: 100% !important;
+    max-width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .report-tabs [data-slot='tabs-trigger'] {
+    flex: 0 0 auto;
+    min-width: max-content;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+}
