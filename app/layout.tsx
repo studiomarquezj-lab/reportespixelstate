@@ -7,8 +7,8 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Pixelstate · Reportes GHL',
-  description: 'Diagnóstico comercial, auditoría de conversaciones y plan de acción para las cuentas GHL de Pixelstate.',
+  title: 'Pixelstate · Inteligencia comercial',
+  description: 'Informes ejecutivos y análisis interno de conversaciones, pipeline y acciones comerciales para las cuentas de Pixelstate.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
