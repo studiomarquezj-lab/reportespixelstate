@@ -81,6 +81,19 @@ const capitalMetrics: AccountMetrics = {
   scope: 'Stock al corte',
 };
 
+const responseBaseline = {
+  newLeads: 294,
+  usefulResponses: 196,
+};
+
+const noResponseCount =
+  responseBaseline.newLeads - responseBaseline.usefulResponses;
+const noResponseRate = percentage(noResponseCount, responseBaseline.newLeads);
+
+// Se completa al autorizar la lectura de Meta Ads en la integración de GHL.
+// Mantener null evita mostrar costos calculados con una inversión inventada.
+const metaSpend: number | null = null;
+
 const accounts: Account[] = [
   { name: 'Adolma', status: 'Por conectar' },
   { name: 'Alessandri', status: 'Por conectar' },
@@ -818,15 +831,15 @@ function ClientExecutive() {
           <p>
             El 19,2% del stock figura como Lead Calificado. Antes de atribuir
             causas o hablar de conversión, el próximo corte debe registrar los
-            movimientos por fecha y desglosar correctamente las etapas de
-            visita.
+            movimientos por fecha, desglosar correctamente las etapas de visita
+            y comparar la tasa de no respuesta, hoy en 33,3%.
           </p>
           <div className="talk-track">
             <span>Cómo decirlo</span>
             <blockquote>
               “Ya tenemos una línea base. En la próxima revisión vamos a mostrar
-              cuánto avanzó cada etapa, qué acciones se ejecutaron y cómo cambió
-              el costo comercial.”
+              cuánto avanzó cada etapa, si bajó la no respuesta, qué acciones se
+              ejecutaron y cómo cambió el costo comercial.”
             </blockquote>
           </div>
         </div>
@@ -854,6 +867,12 @@ function ClientExecutive() {
           value="22"
           label="visita o posterior"
           detail={`${formatPercent(visitRate)} · requiere desglose por etapa`}
+        />
+        <Metric
+          value={formatPercent(noResponseRate)}
+          label="sin respuesta útil"
+          detail={`${noResponseCount} de ${responseBaseline.newLeads} oportunidades en Nuevo Lead`}
+          tone="alert"
         />
         <Metric
           value="—"
@@ -1016,6 +1035,14 @@ function CrmFunnelChart() {
 }
 
 function EvolutionChart() {
+  const monthlyRows = [
+    ['Oportunidades', '—', '—', String(capitalMetrics.opportunities)],
+    ['Nuevo Lead', '—', '—', String(responseBaseline.newLeads)],
+    ['Lead Calificado', '—', '—', String(capitalMetrics.qualified)],
+    ['Visita o posterior', '—', '—', String(capitalMetrics.visitOrLater)],
+    ['Sin respuesta útil', '—', '—', formatPercent(noResponseRate)],
+  ];
+
   return (
     <div
       className="evolution-chart"
@@ -1057,26 +1084,85 @@ function EvolutionChart() {
       <p>
         La comparación aparecerá cuando existan al menos dos cortes homogéneos.
       </p>
+      <div className="evolution-table-wrap">
+        <table className="evolution-table">
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th>Jul</th>
+              <th>Ago</th>
+              <th>Sep</th>
+            </tr>
+          </thead>
+          <tbody>
+            {monthlyRows.map(([label, july, august, september]) => (
+              <tr key={label}>
+                <th>{label}</th>
+                <td>{july}</td>
+                <td>{august}</td>
+                <td>{september}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="evolution-basis">
+        No respuesta = Nuevo Lead sin respuesta útil ÷ total de Nuevo Lead del
+        mismo corte.
+      </p>
     </div>
   );
 }
 
 function CostGrid() {
+  const formatMoney = (value: number | null) =>
+    value === null
+      ? '—'
+      : new Intl.NumberFormat('es-AR', {
+          style: 'currency',
+          currency: 'USD',
+          maximumFractionDigits: 2,
+        }).format(value);
+  const costPerOpportunity =
+    metaSpend === null ? null : metaSpend / capitalMetrics.opportunities;
+  const costPerQualified =
+    metaSpend === null ? null : metaSpend / capitalMetrics.qualified;
+  const costPerVisit =
+    metaSpend === null ? null : metaSpend / capitalMetrics.visitOrLater;
+
   return (
-    <div className="cost-grid">
-      {[
-        ['Gasto Meta', '—', 'Sincronizar desde GHL'],
-        ['Costo por lead', '—', 'Gasto ÷ oportunidades'],
-        ['Costo por calificado', '—', 'Gasto ÷ Lead Calificado'],
-        ['Costo por visita', '—', 'Gasto ÷ Visita Solicitada'],
-      ].map(([label, value, note]) => (
-        <div key={label}>
-          <span>{label}</span>
-          <strong>{value}</strong>
-          <small>{note}</small>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="cost-grid">
+        {[
+          ['Gasto Meta', formatMoney(metaSpend), 'Amount Spent de GHL'],
+          [
+            'Costo por oportunidad',
+            formatMoney(costPerOpportunity),
+            'Gasto ÷ oportunidades del corte',
+          ],
+          [
+            'Costo por calificado',
+            formatMoney(costPerQualified),
+            'Gasto ÷ Lead Calificado',
+          ],
+          [
+            'Costo por visita',
+            formatMoney(costPerVisit),
+            'Gasto ÷ Visita Solicitada',
+          ],
+        ].map(([label, value, note]) => (
+          <div key={label}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+            <small>{note}</small>
+          </div>
+        ))}
+      </div>
+      <p className="cost-source-note">
+        Fuente prevista: Meta Ads → Amount Spent en GHL, usando exactamente el
+        mismo período del corte. Falta autorizar esa lectura en la integración.
+      </p>
+    </>
   );
 }
 
