@@ -1,0 +1,891 @@
+{
+  "generatedAt": "2026-09-25T17:13:15.904Z",
+  "cutoffDate": "2026-09-24",
+  "periodStart": "2026-09-01",
+  "periodEnd": "2026-09-24",
+  "timeZone": "America/Caracas",
+  "methodology": "Cohorte de oportunidades creadas durante el mes hasta el cierre de ayer; la etapa mostrada es la etapa actual al momento de la extracción.",
+  "accounts": [
+    {
+      "name": "Adolma",
+      "locationName": "Adolma Constructora",
+      "metrics": {
+        "opportunities": 191,
+        "qualified": 21,
+        "visitOrLater": 6,
+        "stock": 1587
+      },
+      "stages": [
+        {
+          "label": "Lead nuevo",
+          "count": 168
+        },
+        {
+          "label": "Lead calificado",
+          "count": 15
+        },
+        {
+          "label": "Visita/llamada agendada",
+          "count": 4
+        },
+        {
+          "label": "Lead Cal a recontactar",
+          "count": 2
+        },
+        {
+          "label": "Visita/llamada realizada",
+          "count": 1
+        },
+        {
+          "label": "Visita/llamada solicitada",
+          "count": 1
+        }
+      ],
+      "sources": [
+        {
+          "label": "Meta - Adolma V,VI",
+          "count": 103
+        },
+        {
+          "label": "Meta - Adolma V,VI - LAL VISITAS/CLIENTES",
+          "count": 36
+        },
+        {
+          "label": "WhatsApp",
+          "count": 30
+        },
+        {
+          "label": "Meta - Rmkt",
+          "count": 17
+        },
+        {
+          "label": "Formulario Web",
+          "count": 3
+        },
+        {
+          "label": "Página web",
+          "count": 2
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …czUnWk",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/7YwCklZsKU4ul2czUnWk"
+        },
+        {
+          "contactName": "Contacto …mfOKcc",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/q1Ec4rjWqHcdjLmfOKcc"
+        },
+        {
+          "contactName": "Contacto …hDSx8R",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/LfIwXDdpw0nC96hDSx8R"
+        },
+        {
+          "contactName": "Contacto …zsJLRD",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/qjKGYviIgH2FEjzsJLRD"
+        },
+        {
+          "contactName": "Contacto …4ADg6R",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/qfkHnTbCLXbT7e4ADg6R"
+        },
+        {
+          "contactName": "Contacto …uzrhrj",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/EotJCpP4fNW3ujuzrhrj"
+        },
+        {
+          "contactName": "Contacto …bXHzAo",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/WOKLAjp6fFN4o5bXHzAo"
+        },
+        {
+          "contactName": "Contacto …js0DRV",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/4WA4pEvXcm6fuajs0DRV"
+        }
+      ]
+    },
+    {
+      "name": "Alessandri",
+      "locationName": "Alessandri Negocios Inmobiliarios",
+      "metrics": {
+        "opportunities": 400,
+        "qualified": 36,
+        "visitOrLater": 33,
+        "stock": 3854
+      },
+      "stages": [
+        {
+          "label": "Lead Nuevo",
+          "count": 364
+        },
+        {
+          "label": "Visita Realizada",
+          "count": 19
+        },
+        {
+          "label": "Visita Solicitada",
+          "count": 12
+        },
+        {
+          "label": "Lead Calificado",
+          "count": 3
+        },
+        {
+          "label": "Visita Agendada",
+          "count": 2
+        }
+      ],
+      "sources": [
+        {
+          "label": "Balbin y Holmberg - Terminado - Clientes potenciales",
+          "count": 75
+        },
+        {
+          "label": "Holmberg 3924 - Pozo - Clientes potenciales",
+          "count": 59
+        },
+        {
+          "label": "Directorio Plaza 3236 - Terminado - Clientes potenciales",
+          "count": 58
+        },
+        {
+          "label": "Nazca 3360 - Terminado - Clientes potenciales",
+          "count": 58
+        },
+        {
+          "label": "Zonaprop",
+          "count": 43
+        },
+        {
+          "label": "Torre Elegant-San Martin 2655 - Terminado - Clientes potenciales",
+          "count": 40
+        },
+        {
+          "label": "Alberti Urbano 1077 - Terminado - Clientes potenciales",
+          "count": 21
+        },
+        {
+          "label": "WhatsApp",
+          "count": 17
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …3mBS7s",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/IJfPtuBuKyV67f3mBS7s"
+        },
+        {
+          "contactName": "Contacto …bgwSCA",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/PDnhKUkJVf1R7obgwSCA"
+        },
+        {
+          "contactName": "Contacto …vt7LNq",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/b4zUt8PeFsgEBGvt7LNq"
+        },
+        {
+          "contactName": "Contacto …iZNQHe",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/47tPwbzbPImTz8iZNQHe"
+        },
+        {
+          "contactName": "Contacto …Zc0KV4",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/iSKB2rT0o998Z3Zc0KV4"
+        },
+        {
+          "contactName": "Contacto …Hb9KV8",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/abk9eTz9e4YE0MHb9KV8"
+        },
+        {
+          "contactName": "Contacto …60J2hq",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/PjOhP26WRq1GGw60J2hq"
+        },
+        {
+          "contactName": "Contacto …UoVmA0",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/OlwxNr4bFBpNHhUoVmA0"
+        }
+      ]
+    },
+    {
+      "name": "Capital Brokers (SUELO)",
+      "locationName": "Capital Brokers (SUELO)",
+      "metrics": {
+        "opportunities": 123,
+        "qualified": 42,
+        "visitOrLater": 10,
+        "stock": 419
+      },
+      "stages": [
+        {
+          "label": "Nuevo Lead",
+          "count": 81
+        },
+        {
+          "label": "Lead Calificado",
+          "count": 32
+        },
+        {
+          "label": "Visita Realizada",
+          "count": 4
+        },
+        {
+          "label": "Visita Agendada",
+          "count": 3
+        },
+        {
+          "label": "Seguimiento post Visita",
+          "count": 2
+        },
+        {
+          "label": "Visita Solicitada",
+          "count": 1
+        }
+      ],
+      "sources": [
+        {
+          "label": "Armenia 2327",
+          "count": 42
+        },
+        {
+          "label": "Charcas",
+          "count": 25
+        },
+        {
+          "label": "WhatsApp",
+          "count": 22
+        },
+        {
+          "label": "Salguero",
+          "count": 16
+        },
+        {
+          "label": "SUELO",
+          "count": 5
+        },
+        {
+          "label": "Sin dato",
+          "count": 4
+        },
+        {
+          "label": "RBDD 07/2026",
+          "count": 3
+        },
+        {
+          "label": "zonaprop",
+          "count": 2
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …I1nHwh",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/46381V9P1yRT7UI1nHwh"
+        },
+        {
+          "contactName": "Contacto …vJVpup",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/YIW61OLlesDceRvJVpup"
+        },
+        {
+          "contactName": "Contacto …A307Ct",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/mIFRzTSQ9gzxvHA307Ct"
+        },
+        {
+          "contactName": "Contacto …uLTxb7",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/MWKccjJB3SOJZCuLTxb7"
+        },
+        {
+          "contactName": "Contacto …pd5DOd",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/dGvYvbvb9l6mCRpd5DOd"
+        },
+        {
+          "contactName": "Contacto …YG4xna",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/Hlkkoh1VJ32DDCYG4xna"
+        },
+        {
+          "contactName": "Contacto …24VCkZ",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/fbKmhAWffIqvmi24VCkZ"
+        },
+        {
+          "contactName": "Contacto …LUtxJf",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/E2betafQZwKg5oLUtxJf"
+        }
+      ]
+    },
+    {
+      "name": "El Salvaje",
+      "locationName": "El Salvaje",
+      "metrics": {
+        "opportunities": 214,
+        "qualified": 75,
+        "visitOrLater": 13,
+        "stock": 221
+      },
+      "stages": [
+        {
+          "label": "1. Nuevo Lead",
+          "count": 132
+        },
+        {
+          "label": "2. Lead Calificado",
+          "count": 62
+        },
+        {
+          "label": "4. Visita/Reunión Solicitada",
+          "count": 9
+        },
+        {
+          "label": "3. Derivado Dani",
+          "count": 7
+        },
+        {
+          "label": "6. Visita/Reunión Realizada",
+          "count": 4
+        }
+      ],
+      "sources": [
+        {
+          "label": "WhatsApp",
+          "count": 89
+        },
+        {
+          "label": "Intereses I Bs As I Forms",
+          "count": 39
+        },
+        {
+          "label": "RBDD 09/2026",
+          "count": 31
+        },
+        {
+          "label": "ADV+ I Bs As I Forms",
+          "count": 23
+        },
+        {
+          "label": "Intereses I Costa I Forms",
+          "count": 22
+        },
+        {
+          "label": "Sin dato",
+          "count": 7
+        },
+        {
+          "label": "Página Web",
+          "count": 3
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …aq6dQj",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "20 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/eeob4nLQPLi6W6aq6dQj"
+        },
+        {
+          "contactName": "Contacto …2PGR1H",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "20 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/IMoHSWJN2VTTyE2PGR1H"
+        },
+        {
+          "contactName": "Contacto …rjiFM2",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/qwyyxeIuxD8uIurjiFM2"
+        },
+        {
+          "contactName": "Contacto …z6eI9M",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/9U1mocRCmkvQ7mz6eI9M"
+        },
+        {
+          "contactName": "Contacto …OGCIOw",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/eiL0RE5PZXj6a4OGCIOw"
+        },
+        {
+          "contactName": "Contacto …E3CStQ",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/ElQAvC5H3i73l5E3CStQ"
+        },
+        {
+          "contactName": "Contacto …CNsfYc",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/4HL1hAy0JOnl02CNsfYc"
+        },
+        {
+          "contactName": "Contacto …QS4GeK",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/KYKrYek5jsaUoeQS4GeK"
+        }
+      ]
+    },
+    {
+      "name": "Grupo CISA",
+      "locationName": "Grupo CISA",
+      "metrics": {
+        "opportunities": 91,
+        "qualified": 31,
+        "visitOrLater": 0,
+        "stock": 431
+      },
+      "stages": [
+        {
+          "label": "Nuevo Lead",
+          "count": 56
+        },
+        {
+          "label": "Calificado nivel 1",
+          "count": 29
+        },
+        {
+          "label": "Respondio",
+          "count": 4
+        },
+        {
+          "label": "Calificado nivel 2",
+          "count": 2
+        }
+      ],
+      "sources": [
+        {
+          "label": "facebook",
+          "count": 60
+        },
+        {
+          "label": "RBDD 07/2026",
+          "count": 24
+        },
+        {
+          "label": "Sin dato",
+          "count": 5
+        },
+        {
+          "label": "WhatsApp",
+          "count": 1
+        },
+        {
+          "label": "ZONAPROP",
+          "count": 1
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …pmy0hF",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PT0kTCq46UkVBgpmy0hF"
+        },
+        {
+          "contactName": "Contacto …JrdHMR",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/Ozs468EvgJpwaxJrdHMR"
+        },
+        {
+          "contactName": "Contacto …sWuX0v",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/w8XkWzpnoFx78WsWuX0v"
+        },
+        {
+          "contactName": "Contacto …K8SIQZ",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PIGcDAC3cOtnZaK8SIQZ"
+        },
+        {
+          "contactName": "Contacto …Fkjta1",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/UNhXoPGhebcAqmFkjta1"
+        },
+        {
+          "contactName": "Contacto …yH2cik",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/I63osVR5ESjPANyH2cik"
+        },
+        {
+          "contactName": "Contacto …COsAvq",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/ECGFyz5ut5hzMNCOsAvq"
+        },
+        {
+          "contactName": "Contacto …ist84k",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/Jf0jbf2faZ7whVist84k"
+        }
+      ]
+    },
+    {
+      "name": "Jorge Musa Remax",
+      "locationName": "Jorge Musa Remax",
+      "metrics": {
+        "opportunities": 18,
+        "qualified": 2,
+        "visitOrLater": 0,
+        "stock": 90
+      },
+      "stages": [
+        {
+          "label": "Nuevo Lead",
+          "count": 16
+        },
+        {
+          "label": "Lead Calificado",
+          "count": 2
+        }
+      ],
+      "sources": [
+        {
+          "label": "facebook",
+          "count": 15
+        },
+        {
+          "label": "form",
+          "count": 3
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …KbdBjq",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/nKBlvcGuA35biZKbdBjq"
+        },
+        {
+          "contactName": "Contacto …mtCSvp",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "20 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/MmgqZr6W9KPXIymtCSvp"
+        },
+        {
+          "contactName": "Contacto …QC1CMN",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "18 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/wfnQUESvC98fQ6QC1CMN"
+        },
+        {
+          "contactName": "Contacto …SPlosk",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "17 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/lceBwKZdptQbYISPlosk"
+        },
+        {
+          "contactName": "Contacto …OrIxCU",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "16 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/jGHu0Na7L8xovyOrIxCU"
+        },
+        {
+          "contactName": "Contacto …IkeJ6y",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "15 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/PullzdKOCf7LQfIkeJ6y"
+        },
+        {
+          "contactName": "Contacto …HNmMVe",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "14 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/Ldg30Ai1Ia4cWjHNmMVe"
+        },
+        {
+          "contactName": "Contacto …rBqmQT",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "14 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/FqSqVPmcmmInHQrBqmQT"
+        }
+      ]
+    },
+    {
+      "name": "SUMA Group",
+      "locationName": "SUMA Group",
+      "metrics": {
+        "opportunities": 0,
+        "qualified": 0,
+        "visitOrLater": 0,
+        "stock": 795
+      },
+      "stages": [],
+      "sources": [],
+      "actions": []
+    },
+    {
+      "name": "Urbanika",
+      "locationName": "Urbanika",
+      "metrics": {
+        "opportunities": 188,
+        "qualified": 77,
+        "visitOrLater": 15,
+        "stock": 1171
+      },
+      "stages": [
+        {
+          "label": "Nuevo Lead",
+          "count": 111
+        },
+        {
+          "label": "Lead Calificado",
+          "count": 62
+        },
+        {
+          "label": "Visita Realizada",
+          "count": 7
+        },
+        {
+          "label": "Visita Solicitada",
+          "count": 7
+        },
+        {
+          "label": "Negociación",
+          "count": 1
+        }
+      ],
+      "sources": [
+        {
+          "label": "Meta - Meta - Intereses generales",
+          "count": 48
+        },
+        {
+          "label": "WhatsApp",
+          "count": 41
+        },
+        {
+          "label": "Meta - Meta - Intereses adultos mayores",
+          "count": 30
+        },
+        {
+          "label": "Meta - Meta - Intereses jovenes",
+          "count": 24
+        },
+        {
+          "label": "Meta - Meta - Rmkt_COSTA",
+          "count": 22
+        },
+        {
+          "label": "Meta - Meta - Internacional",
+          "count": 12
+        },
+        {
+          "label": "Página Web",
+          "count": 5
+        },
+        {
+          "label": "Formulario Web",
+          "count": 2
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …XYfmDR",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/PAqZnyFLmvJQq6XYfmDR"
+        },
+        {
+          "contactName": "Contacto …IrBPmf",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/JjUI6CLy8qWc5BIrBPmf"
+        },
+        {
+          "contactName": "Contacto …giV9lO",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/g8fgygKhHW5jGegiV9lO"
+        },
+        {
+          "contactName": "Contacto …DryScZ",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/8gPWNSLIUV4FsvDryScZ"
+        },
+        {
+          "contactName": "Contacto …SVTXEf",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/kDNMwIOKLZ9tkZSVTXEf"
+        },
+        {
+          "contactName": "Contacto …4Q8qgd",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/eIfXak9FJpLGOF4Q8qgd"
+        },
+        {
+          "contactName": "Contacto …ZXOfWy",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/mFQu03Q3qWD3CFZXOfWy"
+        },
+        {
+          "contactName": "Contacto …dCIiES",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/aNpJyzNC93kMKRdCIiES"
+        }
+      ]
+    }
+  ]
+}

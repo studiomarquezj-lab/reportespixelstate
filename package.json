@@ -9,6 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "extract:ghl": "node scripts/extract-ghl-report-data.mjs",
     "lint": "oxlint",
     "format": "oxfmt"
   },

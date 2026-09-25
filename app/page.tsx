@@ -44,6 +44,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ghlReport from './data/ghl-report.json';
 
 type AccountStatus = 'Conectada' | 'Bloqueada' | 'Por conectar' | 'Excluida';
 type Health = 'green' | 'yellow' | 'red' | 'pending';
@@ -51,6 +52,7 @@ type AccountMetrics = {
   opportunities: number;
   qualified: number;
   visitOrLater: number;
+  stock?: number;
   scope: string;
 };
 type Account = {
@@ -85,6 +87,29 @@ type ProblemContact = {
   ghlUrl: string;
 };
 
+type ExtractedAccount = (typeof ghlReport.accounts)[number];
+
+const extractedAccountByName = new Map<string, ExtractedAccount>(
+  ghlReport.accounts.map((account) => [account.name, account]),
+);
+
+function connectedAccount(name: string, note?: string): Account {
+  const extracted = extractedAccountByName.get(name);
+  if (!extracted) {
+    return { name, status: 'Por conectar', note, reportEnabled: true };
+  }
+  return {
+    name,
+    status: 'Conectada',
+    note,
+    reportEnabled: true,
+    metrics: {
+      ...extracted.metrics,
+      scope: `Cohorte ${formatShortDate(ghlReport.periodStart)}–${formatShortDate(ghlReport.periodEnd)}`,
+    },
+  };
+}
+
 const capitalMetrics: AccountMetrics = {
   opportunities: 391,
   qualified: 75,
@@ -106,37 +131,26 @@ const noResponseRate = percentage(noResponseCount, responseBaseline.newLeads);
 const metaSpend: number | null = null;
 
 const accounts: Account[] = [
-  { name: 'Adolma', status: 'Por conectar', reportEnabled: true },
-  { name: 'Alessandri', status: 'Por conectar', reportEnabled: true },
-  {
-    name: 'Capital Brokers (SUELO)',
-    status: 'Conectada',
-    note: 'Informe comercial disponible',
-    metrics: capitalMetrics,
-    reportEnabled: true,
-  },
+  connectedAccount('Adolma'),
+  connectedAccount('Alessandri'),
+  connectedAccount('Capital Brokers (SUELO)', 'Informe comercial disponible'),
   {
     name: 'Capital Brokers - WOW 1',
     status: 'Excluida',
     note: 'Fuera del alcance de esta implementación',
     reportEnabled: false,
   },
-  {
-    name: 'El Salvaje',
-    status: 'Bloqueada',
-    note: 'Falta definir cuenta publicitaria',
-    reportEnabled: true,
-  },
-  { name: 'Grupo CISA', status: 'Por conectar', reportEnabled: true },
-  { name: 'Jorge Musa Remax', status: 'Por conectar', reportEnabled: true },
-  { name: 'SUMA Group', status: 'Por conectar', reportEnabled: true },
+  connectedAccount('El Salvaje', 'Cuenta publicitaria pendiente'),
+  connectedAccount('Grupo CISA'),
+  connectedAccount('Jorge Musa Remax'),
+  connectedAccount('SUMA Group'),
   {
     name: 'Terracent',
     status: 'Excluida',
     note: 'Fuera del alcance de esta implementación',
     reportEnabled: false,
   },
-  { name: 'Urbanika', status: 'Por conectar', reportEnabled: true },
+  connectedAccount('Urbanika'),
   {
     name: 'YUD Desarrollos',
     status: 'Excluida',
@@ -146,15 +160,18 @@ const accounts: Account[] = [
 ];
 const capital = accounts[2];
 
-// Se completa con el extracto quincenal. No se agregan contactos ficticios.
-// Cada registro habilita el enlace directo al contacto real dentro de GHL.
-const problemContacts: ProblemContact[] = [];
+// Los nombres se protegen porque el portal todavía no tiene autenticación.
+// El enlace abre el registro real dentro de GHL para usuarios autorizados.
+const problemContacts: ProblemContact[] = ghlReport.accounts.flatMap(
+  (account) =>
+    account.actions.map((action) => ({ accountName: account.name, ...action })),
+) as ProblemContact[];
 
 const periods: Period[] = [
   {
-    id: '2026-09-h1',
-    label: '1–15 sep 2026',
-    cadence: 'Quincenal',
+    id: '2026-09-mtd',
+    label: `1–${Number(ghlReport.periodEnd.slice(-2))} sep 2026`,
+    cadence: 'Mensual',
     available: true,
   },
   {
@@ -426,6 +443,26 @@ function percentage(value: number, total: number) {
   return total ? (value / total) * 100 : 0;
 }
 
+function formatShortDate(value: string) {
+  const [year, month, day] = value.split('-');
+  const monthLabel =
+    [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ][Number(month) - 1] ?? month;
+  return `${Number(day)} ${monthLabel} ${year}`;
+}
+
 function formatPercent(value: number) {
   return `${value.toFixed(1).replace('.', ',')}%`;
 }
@@ -439,6 +476,21 @@ function accountHealth(account: Account): Health {
   if (rate > 25) return 'green';
   if (rate >= 15) return 'yellow';
   return 'red';
+}
+
+function accountDecision(account: Account) {
+  if (!account.metrics) return 'Completar la primera extracción de datos.';
+  if (!account.metrics.opportunities) {
+    return 'Validar la entrada de leads: no se registran oportunidades nuevas en el período.';
+  }
+  const health = accountHealth(account);
+  if (health === 'red') {
+    return 'Priorizar la conversión de leads nuevos antes de aumentar la inversión.';
+  }
+  if (health === 'yellow') {
+    return 'Revisar los leads estancados y fortalecer el avance a visita.';
+  }
+  return 'Sostener la calificación y concentrar la mejora en visitas y seguimiento.';
 }
 
 function healthLabel(health: Health) {
@@ -513,7 +565,6 @@ export default function Page() {
       }),
     [filter],
   );
-  const isCapital = selected?.name === capital.name;
   const hasReport = Boolean(selected?.reportEnabled);
   const period = periods.find((item) => item.id === periodId) ?? periods[0];
 
@@ -537,7 +588,8 @@ export default function Page() {
           </button>
           <div className="top-actions">
             <span className="sync">
-              <RefreshCw /> Corte base: 17 sep 2026 · 10:01
+              <RefreshCw /> Corte conectado hasta{' '}
+              {formatShortDate(ghlReport.cutoffDate)}
             </span>
             <Button variant="outline" onClick={() => setSelected(null)}>
               <ArrowLeft /> Cartera
@@ -550,25 +602,20 @@ export default function Page() {
             <h1>{selected.name}</h1>
             <div className="inline-meta">
               <Status status={selected.status} />
-              {isCapital ? (
+              {selected.metrics ? (
                 <Badge variant="outline">
-                  391 oportunidades · 7.603 mensajes
+                  {selected.metrics.opportunities} leads del período ·{' '}
+                  {selected.metrics.stock ?? 0} oportunidades en stock
                 </Badge>
               ) : hasReport ? (
-                <Badge variant="outline">
-                  Plantilla habilitada · primer corte pendiente
-                </Badge>
+                <Badge variant="outline">Extracción pendiente</Badge>
               ) : null}
             </div>
           </div>
           {hasReport && (
             <aside className="decision-card">
               <span>Decisión recomendada</span>
-              <strong>
-                {isCapital
-                  ? 'Ordenar el pipeline y construir una base quincenal comparable.'
-                  : 'Completar el primer corte y convertir hallazgos en acciones enlazadas a GHL.'}
-              </strong>
+              <strong>{accountDecision(selected)}</strong>
             </aside>
           )}
         </section>
@@ -578,8 +625,11 @@ export default function Page() {
         {hasReport && <PeriodControl value={periodId} onChange={setPeriodId} />}
         {hasReport ? (
           period.available ? (
-            isCapital ? (
-              <CapitalReport audience={reportView} />
+            selected.metrics ? (
+              <ConnectedAccountReport
+                account={selected}
+                audience={reportView}
+              />
             ) : (
               <PendingAccountReport account={selected} audience={reportView} />
             )
@@ -793,7 +843,8 @@ function PeriodControl({
               .filter((period) => period.cadence === 'Mensual')
               .map((period) => (
                 <option key={period.id} value={period.id}>
-                  {period.label} · pendiente de carga
+                  {period.label}
+                  {period.available ? '' : ' · pendiente de carga'}
                 </option>
               ))}
           </optgroup>
@@ -826,6 +877,8 @@ function PeriodUnavailable({ period }: { period: Period }) {
   );
 }
 
+// Conserva el análisis piloto detallado como referencia para próximos cortes.
+// eslint-disable-next-line no-unused-vars
 function CapitalReport({ audience }: { audience: ReportView }) {
   return audience === 'client' ? <ClientReport /> : <InternalReport />;
 }
@@ -2126,6 +2179,7 @@ function ContactActionTable({ accountName }: { accountName: string }) {
   const rows = problemContacts.filter(
     (contact) => contact.accountName === accountName,
   );
+  const hasExtraction = extractedAccountByName.has(accountName);
 
   return (
     <section
@@ -2138,7 +2192,9 @@ function ContactActionTable({ accountName }: { accountName: string }) {
           <h3>
             {rows.length
               ? `${rows.length} contactos requieren revisión`
-              : 'Listado preparado para datos reales'}
+              : hasExtraction
+                ? 'Sin contactos señalados en este corte'
+                : 'Listado preparado para datos reales'}
           </h3>
         </div>
         <Badge variant="outline">Cuenta: {accountName}</Badge>
@@ -2188,15 +2244,18 @@ function ContactActionTable({ accountName }: { accountName: string }) {
         <div className="contact-action-empty">
           <Database />
           <div>
-            <strong>Faltan los identificadores del contacto</strong>
+            <strong>
+              {hasExtraction
+                ? 'No se detectaron casos con los criterios automáticos'
+                : 'Faltan los identificadores del contacto'}
+            </strong>
             <p>
-              El corte actual solo contiene totales. Para activar los enlaces
-              necesitamos `contact_name`, `contact_id`, `opportunity_id`,
-              problema detectado y URL del registro en GHL. No se mostrarán
-              contactos inventados.
+              {hasExtraction
+                ? 'No hay oportunidades de la cohorte que estén estancadas siete días en etapa inicial, sin responsable visible o sin fuente. Esto no sustituye la revisión manual de conversaciones.'
+                : 'El corte actual solo contiene totales. Para activar los enlaces necesitamos el identificador del contacto, el problema detectado y la URL del registro en GHL.'}
             </p>
           </div>
-          <span>Próximo extracto</span>
+          <span>{hasExtraction ? 'Sin alertas' : 'Próximo extracto'}</span>
         </div>
       )}
     </section>
@@ -2444,6 +2503,161 @@ function MethodNote() {
         <EvidenceTag tone="pending">Por instrumentar</EvidenceTag>
       </div>
     </section>
+  );
+}
+
+function ConnectedAccountReport({
+  account,
+  audience,
+}: {
+  account: Account;
+  audience: ReportView;
+}) {
+  const extracted = extractedAccountByName.get(account.name);
+  const metrics = account.metrics;
+  if (!extracted || !metrics) {
+    return <PendingAccountReport account={account} audience={audience} />;
+  }
+
+  const qualifiedRate = percentage(metrics.qualified, metrics.opportunities);
+  const visitRate = percentage(metrics.visitOrLater, metrics.opportunities);
+  const maxStage = Math.max(...extracted.stages.map((stage) => stage.count), 1);
+  const maxSource = Math.max(
+    ...extracted.sources.map((source) => source.count),
+    1,
+  );
+
+  return (
+    <>
+      <section className="report-ready-banner connected-report-banner">
+        <div className="empty-icon">
+          <CheckCircle2 />
+        </div>
+        <div>
+          <div className="eyebrow">Extracción GHL confirmada</div>
+          <h2>
+            {audience === 'client'
+              ? 'Resumen comercial del mes hasta ayer'
+              : 'Sala de control conectada a datos reales'}
+          </h2>
+          <p>
+            {ghlReport.methodology} {account.note ? `${account.note}.` : ''}
+          </p>
+        </div>
+        <EvidenceTag>Hasta {formatShortDate(ghlReport.cutoffDate)}</EvidenceTag>
+      </section>
+
+      <section className="live-metric-grid" aria-label="Métricas del período">
+        <article>
+          <span>{metrics.opportunities}</span>
+          <strong>Leads del período</strong>
+          <p>
+            Oportunidades creadas entre el 1 y el{' '}
+            {Number(ghlReport.periodEnd.slice(-2))} de septiembre.
+          </p>
+        </article>
+        <article>
+          <span>{formatPercent(qualifiedRate)}</span>
+          <strong>{metrics.qualified} en calificado o posterior</strong>
+          <p>Lectura por nombre de la etapa actual del CRM.</p>
+        </article>
+        <article>
+          <span>{formatPercent(visitRate)}</span>
+          <strong>{metrics.visitOrLater} en visita o posterior</strong>
+          <p>Incluye visita, negociación, reserva y cierre.</p>
+        </article>
+        <article>
+          <span>{metrics.stock ?? 0}</span>
+          <strong>Stock actual</strong>
+          <p>Oportunidades visibles actualmente en los pipelines.</p>
+        </article>
+      </section>
+
+      <section className="connected-data-grid">
+        <article className="connected-panel">
+          <header>
+            <span>Embudo real</span>
+            <h3>Etapas actuales de la cohorte</h3>
+          </header>
+          {extracted.stages.length ? (
+            <div className="live-bars">
+              {extracted.stages.map((stage) => (
+                <div key={stage.label}>
+                  <p>
+                    <strong>{stage.label}</strong>
+                    <span>{stage.count}</span>
+                  </p>
+                  <i>
+                    <b
+                      style={{
+                        width: `${Math.max(4, (stage.count / maxStage) * 100)}%`,
+                      }}
+                    />
+                  </i>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="data-empty-copy">
+              No se registraron oportunidades nuevas durante este período.
+            </p>
+          )}
+        </article>
+
+        <article className="connected-panel">
+          <header>
+            <span>Adquisición</span>
+            <h3>Principales fuentes registradas</h3>
+          </header>
+          {extracted.sources.length ? (
+            <div className="live-bars source-bars">
+              {extracted.sources.map((source) => (
+                <div key={source.label}>
+                  <p>
+                    <strong>{source.label}</strong>
+                    <span>{source.count}</span>
+                  </p>
+                  <i>
+                    <b
+                      style={{
+                        width: `${Math.max(4, (source.count / maxSource) * 100)}%`,
+                      }}
+                    />
+                  </i>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="data-empty-copy">
+              No hay fuentes nuevas para mostrar en esta cohorte.
+            </p>
+          )}
+        </article>
+      </section>
+
+      {audience === 'internal' ? (
+        <>
+          <SectionHeader
+            kicker="Acción inmediata"
+            title="Contactos concretos para revisar dentro de GHL"
+            note="Los identificadores están protegidos en el portal; el nombre completo se ve al abrir GHL con una sesión autorizada."
+          />
+          <ContactActionTable accountName={account.name} />
+        </>
+      ) : (
+        <section className="client-reading-card">
+          <div>
+            <span>Lectura para presentar</span>
+            <h3>{accountDecision(account)}</h3>
+          </div>
+          <p>
+            El avance se calcula sobre las oportunidades creadas durante el mes.
+            No representa todavía una conversión histórica entre etapas: para
+            eso se guardarán cortes sucesivos y movimientos por fecha.
+          </p>
+        </section>
+      )}
+    </>
   );
 }
 
