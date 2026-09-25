@@ -843,3 +843,221 @@
     border-top: 0;
   }
 }
+
+/* Actionable contact layer and account rollout states */
+.account-card.excluded {
+  border-top-color: #c8d0da;
+  background: #f5f7fa;
+  opacity: 0.78;
+}
+.account-card.excluded:hover {
+  border-color: #aeb8c5;
+  box-shadow: none;
+  transform: none;
+}
+.account-card.excluded .account-link,
+.account-card.excluded .health-badge {
+  color: #727e8e;
+}
+
+.report-surface [data-slot='tabs-list'] {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.view-toggle button:focus-visible,
+.account-card:focus-visible,
+.toolbar button:focus-visible,
+.contact-table a:focus-visible {
+  outline: 3px solid #8db9ff;
+  outline-offset: 3px;
+}
+
+.contact-action-panel {
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  background: #fff;
+  box-shadow: 0 12px 34px #102a4c0a;
+}
+.contact-action-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.contact-action-panel > header span {
+  color: var(--blue-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.contact-action-panel > header h3 {
+  margin: 5px 0 0;
+  color: var(--navy);
+  font-size: 21px;
+}
+.contact-table-wrap {
+  overflow-x: auto;
+}
+.contact-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+.contact-table th {
+  padding: 12px 14px;
+  background: var(--blue-pale);
+  color: var(--blue-dark);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.contact-table td {
+  padding: 14px;
+  border-top: 1px solid var(--line);
+  color: #4f6075;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.contact-table td:first-child strong {
+  color: var(--navy);
+}
+.contact-table a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: max-content;
+  padding: 8px 10px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 750;
+  text-decoration: none;
+}
+.contact-table a svg {
+  width: 14px;
+}
+
+.contact-action-empty {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 24px 22px;
+  background: #f8fafc;
+}
+.contact-action-empty > svg {
+  width: 28px;
+  color: var(--blue);
+}
+.contact-action-empty strong {
+  color: var(--navy);
+  font-size: 14px;
+}
+.contact-action-empty p {
+  max-width: 800px;
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.contact-action-empty > span {
+  padding: 6px 9px;
+  border: 1px solid #d2b969;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.report-ready-banner {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 22px;
+  align-items: center;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  background: #fff;
+}
+.report-ready-banner h2 {
+  margin: 6px 0 8px;
+  color: var(--navy);
+  font-size: 27px;
+}
+.report-ready-banner p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.setup-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+.setup-grid article {
+  min-height: 170px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.setup-grid article > span {
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 800;
+}
+.setup-grid strong {
+  display: block;
+  margin-top: 24px;
+  color: var(--navy);
+}
+.setup-grid p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.excluded-state {
+  border-top: 4px solid #aeb8c5;
+}
+
+@media (max-width: 900px) {
+  .setup-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .report-ready-banner {
+    grid-template-columns: 56px 1fr;
+  }
+  .report-ready-banner > .evidence-tag {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-action-panel > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .contact-action-empty {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .report-ready-banner,
+  .setup-grid {
+    grid-template-columns: 1fr;
+  }
+  .report-ready-banner > .evidence-tag {
+    grid-column: 1;
+  }
+}

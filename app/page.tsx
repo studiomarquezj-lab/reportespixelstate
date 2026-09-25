@@ -45,7 +45,7 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-type AccountStatus = 'Conectada' | 'Bloqueada' | 'Por conectar';
+type AccountStatus = 'Conectada' | 'Bloqueada' | 'Por conectar' | 'Excluida';
 type Health = 'green' | 'yellow' | 'red' | 'pending';
 type AccountMetrics = {
   opportunities: number;
@@ -58,6 +58,7 @@ type Account = {
   status: AccountStatus;
   note?: string;
   metrics?: AccountMetrics;
+  reportEnabled: boolean;
 };
 type ReportView = 'client' | 'internal';
 type Period = {
@@ -72,6 +73,16 @@ type DetailItem = {
   criteria: string;
   action: string;
   owner: 'PIXEL' | 'EQUIPO COMERCIAL';
+};
+
+type ProblemContact = {
+  accountName: string;
+  contactName: string;
+  problem: string;
+  evidence: string;
+  owner: 'PIXEL' | 'EQUIPO COMERCIAL';
+  priority: 'P0' | 'P1' | 'P2';
+  ghlUrl: string;
 };
 
 const capitalMetrics: AccountMetrics = {
@@ -95,28 +106,49 @@ const noResponseRate = percentage(noResponseCount, responseBaseline.newLeads);
 const metaSpend: number | null = null;
 
 const accounts: Account[] = [
-  { name: 'Adolma', status: 'Por conectar' },
-  { name: 'Alessandri', status: 'Por conectar' },
+  { name: 'Adolma', status: 'Por conectar', reportEnabled: true },
+  { name: 'Alessandri', status: 'Por conectar', reportEnabled: true },
   {
     name: 'Capital Brokers (SUELO)',
     status: 'Conectada',
     note: 'Informe comercial disponible',
     metrics: capitalMetrics,
+    reportEnabled: true,
   },
-  { name: 'Capital Brokers - WOW 1', status: 'Por conectar' },
+  {
+    name: 'Capital Brokers - WOW 1',
+    status: 'Excluida',
+    note: 'Fuera del alcance de esta implementación',
+    reportEnabled: false,
+  },
   {
     name: 'El Salvaje',
     status: 'Bloqueada',
     note: 'Falta definir cuenta publicitaria',
+    reportEnabled: true,
   },
-  { name: 'Grupo CISA', status: 'Por conectar' },
-  { name: 'Jorge Musa Remax', status: 'Por conectar' },
-  { name: 'SUMA Group', status: 'Por conectar' },
-  { name: 'Terracent', status: 'Por conectar' },
-  { name: 'Urbanika', status: 'Por conectar' },
-  { name: 'YUD Desarrollos', status: 'Por conectar' },
+  { name: 'Grupo CISA', status: 'Por conectar', reportEnabled: true },
+  { name: 'Jorge Musa Remax', status: 'Por conectar', reportEnabled: true },
+  { name: 'SUMA Group', status: 'Por conectar', reportEnabled: true },
+  {
+    name: 'Terracent',
+    status: 'Excluida',
+    note: 'Fuera del alcance de esta implementación',
+    reportEnabled: false,
+  },
+  { name: 'Urbanika', status: 'Por conectar', reportEnabled: true },
+  {
+    name: 'YUD Desarrollos',
+    status: 'Excluida',
+    note: 'Fuera del alcance de esta implementación',
+    reportEnabled: false,
+  },
 ];
 const capital = accounts[2];
+
+// Se completa con el extracto quincenal. No se agregan contactos ficticios.
+// Cada registro habilita el enlace directo al contacto real dentro de GHL.
+const problemContacts: ProblemContact[] = [];
 
 const periods: Period[] = [
   {
@@ -466,7 +498,7 @@ function EvidenceTag({
 }
 
 export default function Page() {
-  const [selected, setSelected] = useState<Account | null>(capital);
+  const [selected, setSelected] = useState<Account | null>(null);
   const [filter, setFilter] = useState('Todas');
   const [reportView, setReportView] = useState<ReportView>('client');
   const [periodId, setPeriodId] = useState(periods[0].id);
@@ -474,14 +506,15 @@ export default function Page() {
     () =>
       accounts.filter((account) => {
         if (filter === 'Todas') return true;
-        if (filter === 'Con datos') return Boolean(account.metrics);
+        if (filter === 'Habilitadas') return account.reportEnabled;
         if (filter === 'Sin datos')
-          return !account.metrics && account.status !== 'Bloqueada';
-        return account.status === 'Bloqueada';
+          return account.reportEnabled && !account.metrics;
+        return !account.reportEnabled;
       }),
     [filter],
   );
   const isCapital = selected?.name === capital.name;
+  const hasReport = Boolean(selected?.reportEnabled);
   const period = periods.find((item) => item.id === periodId) ?? periods[0];
 
   useEffect(() => {
@@ -517,34 +550,44 @@ export default function Page() {
             <h1>{selected.name}</h1>
             <div className="inline-meta">
               <Status status={selected.status} />
-              {isCapital && (
+              {isCapital ? (
                 <Badge variant="outline">
                   391 oportunidades · 7.603 mensajes
                 </Badge>
-              )}
+              ) : hasReport ? (
+                <Badge variant="outline">
+                  Plantilla habilitada · primer corte pendiente
+                </Badge>
+              ) : null}
             </div>
           </div>
-          {isCapital && (
+          {hasReport && (
             <aside className="decision-card">
               <span>Decisión recomendada</span>
               <strong>
-                Ordenar el pipeline y construir una base quincenal comparable.
+                {isCapital
+                  ? 'Ordenar el pipeline y construir una base quincenal comparable.'
+                  : 'Completar el primer corte y convertir hallazgos en acciones enlazadas a GHL.'}
               </strong>
             </aside>
           )}
         </section>
-        {isCapital && (
+        {hasReport && (
           <ModeSwitcher value={reportView} onChange={setReportView} />
         )}
-        {isCapital && <PeriodControl value={periodId} onChange={setPeriodId} />}
-        {isCapital ? (
+        {hasReport && <PeriodControl value={periodId} onChange={setPeriodId} />}
+        {hasReport ? (
           period.available ? (
-            <CapitalReport audience={reportView} />
+            isCapital ? (
+              <CapitalReport audience={reportView} />
+            ) : (
+              <PendingAccountReport account={selected} audience={reportView} />
+            )
           ) : (
             <PeriodUnavailable period={period} />
           )
         ) : (
-          <EmptyAccount account={selected} />
+          <ExcludedAccount account={selected} />
         )}
       </main>
     );
@@ -585,7 +628,7 @@ export default function Page() {
       </section>
       <section className="toolbar">
         <div>
-          {['Todas', 'Con datos', 'Sin datos', 'Bloqueada'].map((value) => (
+          {['Todas', 'Habilitadas', 'Sin datos', 'Excluidas'].map((value) => (
             <button
               key={value}
               className={filter === value ? 'selected' : ''}
@@ -627,7 +670,10 @@ function AccountCard({
     ? percentage(metrics.visitOrLater, metrics.opportunities)
     : null;
   return (
-    <button className={`account-card health-${health}`} onClick={onOpen}>
+    <button
+      className={`account-card health-${health} ${account.reportEnabled ? '' : 'excluded'}`}
+      onClick={onOpen}
+    >
       <div className="account-card-head">
         <Status status={account.status} />
         <span className={`health-badge ${health}`}>
@@ -663,7 +709,12 @@ function AccountCard({
         </div>
       </div>
       <span className="account-link">
-        {metrics ? 'Abrir informe' : 'Ver estado'} <ArrowRight />
+        {metrics
+          ? 'Abrir informe'
+          : account.reportEnabled
+            ? 'Preparar primer corte'
+            : 'Fuera de alcance'}{' '}
+        <ArrowRight />
       </span>
     </button>
   );
@@ -691,7 +742,7 @@ function ModeSwitcher({
             : 'Riesgos, acciones y colas de trabajo para CRM y Campañas.'}
         </p>
       </div>
-      <div aria-label="Seleccionar modo">
+      <div className="view-toggle" aria-label="Seleccionar modo">
         <button
           className={value === 'client' ? 'active' : ''}
           onClick={() => onChange('client')}
@@ -1666,7 +1717,7 @@ function InternalReport() {
       <TabsList aria-label="Secciones internas">
         <TabsTrigger value="control">Sala de control</TabsTrigger>
         <TabsTrigger value="qa">QA de conversaciones</TabsTrigger>
-        <TabsTrigger value="queues">Colas de trabajo</TabsTrigger>
+        <TabsTrigger value="queues">Acciones y contactos</TabsTrigger>
         <TabsTrigger value="sop">Auditoría SOP</TabsTrigger>
         <TabsTrigger value="playbook">Playbook</TabsTrigger>
       </TabsList>
@@ -2004,9 +2055,15 @@ function InternalQueues() {
   return (
     <>
       <SectionHeader
-        kicker="Backlog accionable"
-        title="Una sola matriz concentra criterios y responsables"
-        note="Cada fila abrirá la lista nominal cuando el corte incluya opportunity_id"
+        kicker="Centro de acción"
+        title="Del hallazgo al contacto dentro de GHL"
+        note="Sofía puede abrir el registro exacto, revisar la evidencia y ejecutar la acción"
+      />
+      <ContactActionTable accountName={capital.name} />
+      <SectionHeader
+        kicker="Criterios agregados"
+        title="Colas que generan la lista de contactos"
+        note="El conteo explica la magnitud; el centro de acción identifica a quién revisar"
       />
       <section className="queue-list">
         {reviewQueues.map((item, index) => (
@@ -2034,7 +2091,7 @@ function InternalQueues() {
               size="sm"
               onClick={() => setSelectedQueue(item)}
             >
-              Ver oportunidades <ArrowUpRight />
+              Ver criterio <ArrowUpRight />
             </Button>
           </article>
         ))}
@@ -2062,6 +2119,87 @@ function InternalQueues() {
         onClose={() => setSelectedQueue(null)}
       />
     </>
+  );
+}
+
+function ContactActionTable({ accountName }: { accountName: string }) {
+  const rows = problemContacts.filter(
+    (contact) => contact.accountName === accountName,
+  );
+
+  return (
+    <section
+      className="contact-action-panel"
+      aria-label="Contactos con acción pendiente"
+    >
+      <header>
+        <div>
+          <span>Contactos señalados</span>
+          <h3>
+            {rows.length
+              ? `${rows.length} contactos requieren revisión`
+              : 'Listado preparado para datos reales'}
+          </h3>
+        </div>
+        <Badge variant="outline">Cuenta: {accountName}</Badge>
+      </header>
+      {rows.length ? (
+        <div className="contact-table-wrap">
+          <table className="contact-table">
+            <thead>
+              <tr>
+                <th>Contacto</th>
+                <th>Problema</th>
+                <th>Evidencia</th>
+                <th>Responsable</th>
+                <th>Prioridad</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((contact) => (
+                <tr key={`${contact.accountName}-${contact.ghlUrl}`}>
+                  <td>
+                    <strong>{contact.contactName}</strong>
+                  </td>
+                  <td>{contact.problem}</td>
+                  <td>{contact.evidence}</td>
+                  <td>{contact.owner}</td>
+                  <td>
+                    <Badge
+                      variant={
+                        contact.priority === 'P0' ? 'destructive' : 'outline'
+                      }
+                    >
+                      {contact.priority}
+                    </Badge>
+                  </td>
+                  <td>
+                    <a href={contact.ghlUrl} target="_blank" rel="noreferrer">
+                      Abrir en GHL <ArrowUpRight />
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="contact-action-empty">
+          <Database />
+          <div>
+            <strong>Faltan los identificadores del contacto</strong>
+            <p>
+              El corte actual solo contiene totales. Para activar los enlaces
+              necesitamos `contact_name`, `contact_id`, `opportunity_id`,
+              problema detectado y URL del registro en GHL. No se mostrarán
+              contactos inventados.
+            </p>
+          </div>
+          <span>Próximo extracto</span>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -2309,36 +2447,87 @@ function MethodNote() {
   );
 }
 
-function EmptyAccount({ account }: { account: Account }) {
-  const blocked = account.status === 'Bloqueada';
+function PendingAccountReport({
+  account,
+  audience,
+}: {
+  account: Account;
+  audience: ReportView;
+}) {
   return (
-    <section className="empty-state">
+    <>
+      <section className="report-ready-banner">
+        <div className="empty-icon">
+          {account.status === 'Bloqueada' ? <LockKeyhole /> : <Database />}
+        </div>
+        <div>
+          <div className="eyebrow">Plantilla habilitada</div>
+          <h2>
+            {audience === 'client'
+              ? 'Vista Cliente lista para el primer corte'
+              : 'Vista Interno lista para operar'}
+          </h2>
+          <p>
+            {account.status === 'Bloqueada'
+              ? `${account.note}. El reporte ya está creado, pero no podrá cargar métricas hasta resolver esta dependencia.`
+              : 'La estructura ya está disponible para esta cuenta. Las métricas permanecerán vacías hasta recibir el primer extracto quincenal.'}
+          </p>
+        </div>
+        <EvidenceTag tone="pending">Sin datos del corte</EvidenceTag>
+      </section>
+      {audience === 'internal' && (
+        <ContactActionTable accountName={account.name} />
+      )}
+      <section className="setup-grid">
+        <article>
+          <span>01</span>
+          <strong>Acceso</strong>
+          <p>Confirmar subcuenta GHL y pipeline correcto.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>Datos</strong>
+          <p>Cargar etapas, mensajes, fuentes, etiquetas e inversión.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>Acción</strong>
+          <p>Incluir IDs y URLs para abrir cada contacto señalado.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <strong>Corte</strong>
+          <p>Publicar la quincena y preparar el agregado mensual.</p>
+        </article>
+      </section>
+    </>
+  );
+}
+
+function ExcludedAccount({ account }: { account: Account }) {
+  return (
+    <section className="empty-state excluded-state">
       <div className="empty-icon">
-        {blocked ? <LockKeyhole /> : <Database />}
+        <LockKeyhole />
       </div>
       <div>
-        <div className="eyebrow">Estado de la cuenta</div>
-        <h2>
-          {blocked ? 'Conexión bloqueada' : 'Aún no hay lectura disponible'}
-        </h2>
+        <div className="eyebrow">Fuera de alcance</div>
+        <h2>Esta cuenta no recibirá el reporte.</h2>
         <p>
-          {blocked
-            ? `${account.note}. Antes de iniciar el informe hace falta resolver esta dependencia.`
-            : 'Conecta la subcuenta GHL y carga un primer corte quincenal para calcular la salud sin inventar métricas.'}
+          {account.name} fue excluida de esta implementación. No se habilitarán
+          cortes, acciones ni enlaces a contactos.
         </p>
       </div>
       <div className="checklist">
-        {[
-          'Confirmar acceso a GHL',
-          'Validar pipeline y etapas',
-          'Mapear gasto, fuentes y etiquetas',
-          'Ejecutar corte quincenal',
-        ].map((step, index) => (
-          <p key={step}>
-            <i>{index + 1}</i>
-            {step}
-          </p>
-        ))}
+        <p>
+          <i>1</i>Sin plantilla activa
+        </p>
+        <p>
+          <i>2</i>Sin extracción quincenal
+        </p>
+        <p>
+          <i>3</i>Sin acceso para cliente
+        </p>
       </div>
     </section>
   );
