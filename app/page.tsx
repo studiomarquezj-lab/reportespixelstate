@@ -467,6 +467,10 @@ function formatPercent(value: number) {
   return `${value.toFixed(1).replace('.', ',')}%`;
 }
 
+function formatNumber(value: number) {
+  return new Intl.NumberFormat('es-AR').format(value);
+}
+
 function accountHealth(account: Account): Health {
   if (!account.metrics) return 'pending';
   const rate = percentage(
@@ -2251,7 +2255,7 @@ function ContactActionTable({ accountName }: { accountName: string }) {
             </strong>
             <p>
               {hasExtraction
-                ? 'No hay oportunidades de la cohorte que estén estancadas siete días en etapa inicial, sin responsable visible o sin fuente. Esto no sustituye la revisión manual de conversaciones.'
+                ? 'No se detectaron pedidos de visita sin seguimiento, entrantes sin respuesta, fallas de WhatsApp ni otros criterios automáticos en esta cohorte. Esto no sustituye la revisión manual.'
                 : 'El corte actual solo contiene totales. Para activar los enlaces necesitamos el identificador del contacto, el problema detectado y la URL del registro en GHL.'}
             </p>
           </div>
@@ -2506,6 +2510,212 @@ function MethodNote() {
   );
 }
 
+function ConversationPulse({ account }: { account: ExtractedAccount }) {
+  const summary = account.conversationSummary;
+
+  return (
+    <section className="conversation-pulse" aria-label="Actividad conversacional">
+      <article>
+        <MessageCircle />
+        <div>
+          <span>{formatNumber(summary.messages)}</span>
+          <strong>Mensajes analizados</strong>
+          <p>Actividad no-email del período en GHL.</p>
+        </div>
+      </article>
+      <article>
+        <UserRoundCheck />
+        <div>
+          <span>{formatNumber(summary.contacts)}</span>
+          <strong>Contactos con actividad</strong>
+          <p>Base conversacional observada en el corte.</p>
+        </div>
+      </article>
+      <article>
+        <ArrowRight />
+        <div>
+          <span>{formatNumber(summary.inbound)}</span>
+          <strong>Mensajes entrantes</strong>
+          <p>Señales recibidas para evaluar seguimiento.</p>
+        </div>
+      </article>
+      <article>
+        <CircleAlert />
+        <div>
+          <span>{formatNumber(summary.failedWhatsApp)}</span>
+          <strong>Envíos WhatsApp fallidos</strong>
+          <p>Eventos técnicos; no todos siguen abiertos.</p>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function ActionBreakdown({
+  account,
+  compact = false,
+}: {
+  account: ExtractedAccount;
+  compact?: boolean;
+}) {
+  const items = compact
+    ? account.actionBreakdown.slice(0, 3)
+    : account.actionBreakdown;
+
+  return (
+    <section className={`action-breakdown ${compact ? 'compact' : ''}`}>
+      {items.map((item) => (
+        <article key={item.key} className={`priority-${item.priority}`}>
+          <header>
+            <Badge variant={item.priority === 'P0' ? 'destructive' : 'outline'}>
+              {item.priority}
+            </Badge>
+            <span>{item.owner}</span>
+          </header>
+          <strong>{item.count}</strong>
+          <h3>{item.label}</h3>
+          <p>{item.criteria}</p>
+          <footer>
+            <b>Acción</b>
+            <span>{item.action}</span>
+          </footer>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function ClientCommercialReading({
+  account,
+  reportAccount,
+}: {
+  account: Account;
+  reportAccount: ExtractedAccount;
+}) {
+  const topAlert = reportAccount.actionBreakdown[0];
+  const dominantSource = reportAccount.sources[0];
+  const visitRate = percentage(
+    account.metrics?.visitOrLater ?? 0,
+    account.metrics?.opportunities ?? 0,
+  );
+
+  return (
+    <>
+      <SectionHeader
+        kicker="Lectura comercial"
+        title="Qué está pasando y cómo explicarlo al cliente"
+        note="Conclusiones breves, apoyadas por el corte actual"
+      />
+      <section className="commercial-reading-grid">
+        <article className="commercial-lead-card">
+          <span>Conclusión ejecutiva</span>
+          <h3>{accountDecision(account)}</h3>
+          <p>
+            El {formatPercent(visitRate)} de la cohorte se encuentra hoy en
+            Visita o una etapa posterior. Es una fotografía de etapa actual,
+            no una conversión histórica entre pasos.
+          </p>
+        </article>
+        <article>
+          <Gauge />
+          <span>Cuello de botella observable</span>
+          <h3>{topAlert?.label ?? 'Sin alerta dominante'}</h3>
+          <p>
+            {topAlert
+              ? `${topAlert.count} oportunidades cumplen este criterio en el análisis interno.`
+              : 'No hay una alerta automática dominante para esta cohorte.'}
+          </p>
+        </article>
+        <article>
+          <Route />
+          <span>Lectura de adquisición</span>
+          <h3>{dominantSource?.label ?? 'Fuente pendiente'}</h3>
+          <p>
+            {dominantSource
+              ? `${dominantSource.count} leads están asociados a la principal fuente registrada. Conviene revisar los registros sin fuente o con nombres duplicados.`
+              : 'No hay fuentes nuevas suficientes para una lectura del período.'}
+          </p>
+        </article>
+      </section>
+
+      <SectionHeader
+        kicker="Acciones recomendadas"
+        title="Tres decisiones que puede llevar el PM"
+        note="La ejecución detallada y los contactos quedan en la vista Interno"
+      />
+      <ActionBreakdown account={reportAccount} compact />
+      <section className="client-reading-card">
+        <div>
+          <span>Cómo presentarlo</span>
+          <h3>
+            “No estamos mirando solo volumen: estamos identificando dónde se
+            pierde intención y qué acción concreta recupera cada oportunidad.”
+          </h3>
+        </div>
+        <p>
+          Los criterios conversacionales son señales automáticas para
+          priorizar revisión. El equipo valida el contexto en GHL antes de
+          afirmar una causa o cambiar la etapa de una oportunidad.
+        </p>
+      </section>
+    </>
+  );
+}
+
+function InternalOperatingView({ account }: { account: ExtractedAccount }) {
+  return (
+    <>
+      <SectionHeader
+        kicker="Mapa de alertas"
+        title="Problemas priorizados por impacto comercial"
+        note="P0 se revisa primero; cada alerta dispara una acción y tiene un responsable"
+      />
+      <ActionBreakdown account={account} />
+      <SectionHeader
+        kicker="Acción inmediata"
+        title="Contactos concretos para revisar dentro de GHL"
+        note="La selección distribuye los casos entre categorías; el nombre completo se ve al abrir GHL con una sesión autorizada."
+      />
+      <ContactActionTable accountName={account.name} />
+      <section className="operating-cadence">
+        <div>
+          <CalendarClock />
+          <span>Antes del miércoles</span>
+          <strong>Investigar los P0 y preparar causa probable.</strong>
+          <p>PIXEL y Equipo Comercial revisan sus colas asignadas.</p>
+        </div>
+        <div>
+          <BriefcaseBusiness />
+          <span>Reunión de equipo</span>
+          <strong>Validar criterio, responsable y siguiente paso.</strong>
+          <p>La reunión decide; el reporte trae la evidencia.</p>
+        </div>
+        <div>
+          <CheckCircle2 />
+          <span>Después de la reunión</span>
+          <strong>Ejecutar y dejar trazabilidad en GHL.</strong>
+          <p>El próximo corte comprueba si la cola se redujo.</p>
+        </div>
+      </section>
+      <section className="method-note connected-method-note">
+        <Database />
+        <div>
+          <strong>Cómo leer esta auditoría</strong>
+          <p>
+            Se cruzan etapa actual, fecha de alta, dirección, estado, fuente y
+            contenido del mensaje. Las señales lingüísticas son heurísticas y
+            requieren validación humana; no sustituyen una calificación del CRM.
+          </p>
+        </div>
+        <div className="evidence-legend">
+          <EvidenceTag>Dato GHL</EvidenceTag>
+          <EvidenceTag tone="inferred">Criterio automático</EvidenceTag>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function ConnectedAccountReport({
   account,
   audience,
@@ -2635,27 +2845,17 @@ function ConnectedAccountReport({
         </article>
       </section>
 
+      <SectionHeader
+        kicker="Conversaciones"
+        title="Actividad que sostiene la lectura comercial"
+        note="Los totales describen actividad; las alertas se calculan por contacto y secuencia"
+      />
+      <ConversationPulse account={extracted} />
+
       {audience === 'internal' ? (
-        <>
-          <SectionHeader
-            kicker="Acción inmediata"
-            title="Contactos concretos para revisar dentro de GHL"
-            note="Los identificadores están protegidos en el portal; el nombre completo se ve al abrir GHL con una sesión autorizada."
-          />
-          <ContactActionTable accountName={account.name} />
-        </>
+        <InternalOperatingView account={extracted} />
       ) : (
-        <section className="client-reading-card">
-          <div>
-            <span>Lectura para presentar</span>
-            <h3>{accountDecision(account)}</h3>
-          </div>
-          <p>
-            El avance se calcula sobre las oportunidades creadas durante el mes.
-            No representa todavía una conversión histórica entre etapas: para
-            eso se guardarán cortes sucesivos y movimientos por fecha.
-          </p>
-        </section>
+        <ClientCommercialReading account={account} reportAccount={extracted} />
       )}
     </>
   );

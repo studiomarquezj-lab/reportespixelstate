@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-25T17:13:15.904Z",
-  "cutoffDate": "2026-09-24",
+  "generatedAt": "2026-09-28T16:02:56.557Z",
+  "cutoffDate": "2026-09-27",
   "periodStart": "2026-09-01",
-  "periodEnd": "2026-09-24",
+  "periodEnd": "2026-09-27",
   "timeZone": "America/Caracas",
   "methodology": "Cohorte de oportunidades creadas durante el mes hasta el cierre de ayer; la etapa mostrada es la etapa actual al momento de la extracción.",
   "accounts": [
@@ -10,53 +10,53 @@
       "name": "Adolma",
       "locationName": "Adolma Constructora",
       "metrics": {
-        "opportunities": 191,
-        "qualified": 21,
+        "opportunities": 209,
+        "qualified": 22,
         "visitOrLater": 6,
-        "stock": 1587
+        "stock": 1604
       },
       "stages": [
         {
-          "label": "Lead nuevo",
-          "count": 168
+          "label": "Nuevo Lead",
+          "count": 185
         },
         {
-          "label": "Lead calificado",
-          "count": 15
+          "label": "Calificado nivel 1",
+          "count": 16
         },
         {
-          "label": "Visita/llamada agendada",
+          "label": "Visita agendada",
           "count": 4
         },
         {
-          "label": "Lead Cal a recontactar",
+          "label": "Recontactar",
           "count": 2
         },
         {
-          "label": "Visita/llamada realizada",
+          "label": "Visita realizada",
           "count": 1
         },
         {
-          "label": "Visita/llamada solicitada",
+          "label": "Visita solicitada",
           "count": 1
         }
       ],
       "sources": [
         {
           "label": "Meta - Adolma V,VI",
-          "count": 103
+          "count": 112
         },
         {
           "label": "Meta - Adolma V,VI - LAL VISITAS/CLIENTES",
-          "count": 36
+          "count": 43
         },
         {
           "label": "WhatsApp",
-          "count": 30
+          "count": 31
         },
         {
           "label": "Meta - Rmkt",
-          "count": 17
+          "count": 18
         },
         {
           "label": "Formulario Web",
@@ -67,70 +67,151 @@
           "count": 2
         }
       ],
+      "conversationSummary": {
+        "available": true,
+        "messages": 3319,
+        "contacts": 450,
+        "inbound": 1166,
+        "outbound": 2153,
+        "failedWhatsApp": 63
+      },
+      "actionBreakdown": [
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 7
+        },
+        {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 18
+        },
+        {
+          "key": "no_successful_outbound",
+          "label": "Sin primer saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.",
+          "action": "Revisar teléfono, workflow, webhook y estado de entrega.",
+          "count": 1
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 93
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 11
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 44
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 35
+        }
+      ],
       "actions": [
         {
-          "contactName": "Contacto …czUnWk",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/7YwCklZsKU4ul2czUnWk"
-        },
-        {
-          "contactName": "Contacto …mfOKcc",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/q1Ec4rjWqHcdjLmfOKcc"
-        },
-        {
-          "contactName": "Contacto …hDSx8R",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/LfIwXDdpw0nC96hDSx8R"
-        },
-        {
-          "contactName": "Contacto …zsJLRD",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/qjKGYviIgH2FEjzsJLRD"
-        },
-        {
-          "contactName": "Contacto …4ADg6R",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/qfkHnTbCLXbT7e4ADg6R"
-        },
-        {
           "contactName": "Contacto …uzrhrj",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "637 h sin respuesta saliente posterior · etapa: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/EotJCpP4fNW3ujuzrhrj"
         },
         {
-          "contactName": "Contacto …bXHzAo",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
-          "owner": "EQUIPO COMERCIAL",
+          "contactName": "Contacto …ibup2J",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/WOKLAjp6fFN4o5bXHzAo"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/AcivehFzfUlE9yibup2J"
         },
         {
-          "contactName": "Contacto …js0DRV",
+          "contactName": "Contacto …Mr34ks",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "18 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/841Y9kMaSvb0raMr34ks"
+        },
+        {
+          "contactName": "Contacto …mfOKcc",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/q1Ec4rjWqHcdjLmfOKcc"
+        },
+        {
+          "contactName": "Contacto …7dQqcq",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/dbAaXBBNRepUUT7dQqcq"
+        },
+        {
+          "contactName": "Contacto …czUnWk",
+          "category": "stale_initial",
           "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead nuevo",
+          "evidence": "26 días desde el alta · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/7YwCklZsKU4ul2czUnWk"
+        },
+        {
+          "contactName": "Contacto …e2fSgh",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Calificado nivel 1",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/2Pys6aZC1gcAcCe2fSgh"
+        },
+        {
+          "contactName": "Contacto …aGqDq2",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "579 h sin respuesta saliente posterior · etapa: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/4WA4pEvXcm6fuajs0DRV"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/NOIAun4qR9O9ZfkhxWSS/contacts/detail/EzRPO4n2yiVBBJaGqDq2"
         }
       ]
     },
@@ -138,27 +219,27 @@
       "name": "Alessandri",
       "locationName": "Alessandri Negocios Inmobiliarios",
       "metrics": {
-        "opportunities": 400,
-        "qualified": 36,
-        "visitOrLater": 33,
-        "stock": 3854
+        "opportunities": 436,
+        "qualified": 40,
+        "visitOrLater": 38,
+        "stock": 3891
       },
       "stages": [
         {
           "label": "Lead Nuevo",
-          "count": 364
+          "count": 396
         },
         {
           "label": "Visita Realizada",
-          "count": 19
+          "count": 20
         },
         {
           "label": "Visita Solicitada",
-          "count": 12
+          "count": 16
         },
         {
           "label": "Lead Calificado",
-          "count": 3
+          "count": 2
         },
         {
           "label": "Visita Agendada",
@@ -168,101 +249,191 @@
       "sources": [
         {
           "label": "Balbin y Holmberg - Terminado - Clientes potenciales",
-          "count": 75
-        },
-        {
-          "label": "Holmberg 3924 - Pozo - Clientes potenciales",
-          "count": 59
-        },
-        {
-          "label": "Directorio Plaza 3236 - Terminado - Clientes potenciales",
-          "count": 58
+          "count": 81
         },
         {
           "label": "Nazca 3360 - Terminado - Clientes potenciales",
-          "count": 58
+          "count": 67
         },
         {
-          "label": "Zonaprop",
-          "count": 43
+          "label": "Holmberg 3924 - Pozo - Clientes potenciales",
+          "count": 64
+        },
+        {
+          "label": "Directorio Plaza 3236 - Terminado - Clientes potenciales",
+          "count": 62
         },
         {
           "label": "Torre Elegant-San Martin 2655 - Terminado - Clientes potenciales",
-          "count": 40
+          "count": 46
+        },
+        {
+          "label": "Zonaprop",
+          "count": 44
         },
         {
           "label": "Alberti Urbano 1077 - Terminado - Clientes potenciales",
-          "count": 21
+          "count": 24
         },
         {
           "label": "WhatsApp",
-          "count": 17
+          "count": 16
+        }
+      ],
+      "conversationSummary": {
+        "available": true,
+        "messages": 8303,
+        "contacts": 911,
+        "inbound": 3532,
+        "outbound": 4771,
+        "failedWhatsApp": 526
+      },
+      "actionBreakdown": [
+        {
+          "key": "visit_without_followup",
+          "label": "Visita solicitada sin seguimiento",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El contacto expresó intención de coordinar una visita y no se detectó una respuesta humana posterior.",
+          "action": "Abrir el contacto, confirmar disponibilidad y ofrecer dos horarios concretos.",
+          "count": 3
+        },
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 68
+        },
+        {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 38
+        },
+        {
+          "key": "no_successful_outbound",
+          "label": "Sin primer saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.",
+          "action": "Revisar teléfono, workflow, webhook y estado de entrega.",
+          "count": 5
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 136
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 47
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 105
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 34
         }
       ],
       "actions": [
         {
-          "contactName": "Contacto …3mBS7s",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "contactName": "Contacto …8cf1qX",
+          "category": "visit_without_followup",
+          "problem": "Visita solicitada sin seguimiento",
+          "evidence": "Pedido de visita sin respuesta humana posterior · etapa: Lead Nuevo",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/IJfPtuBuKyV67f3mBS7s"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/DtVP40mBOmtWHj8cf1qX"
         },
         {
           "contactName": "Contacto …bgwSCA",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "462 h sin respuesta saliente posterior · etapa: Lead Nuevo",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/PDnhKUkJVf1R7obgwSCA"
         },
         {
-          "contactName": "Contacto …vt7LNq",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/b4zUt8PeFsgEBGvt7LNq"
-        },
-        {
-          "contactName": "Contacto …iZNQHe",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/47tPwbzbPImTz8iZNQHe"
-        },
-        {
-          "contactName": "Contacto …Zc0KV4",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/iSKB2rT0o998Z3Zc0KV4"
-        },
-        {
           "contactName": "Contacto …Hb9KV8",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
-          "owner": "EQUIPO COMERCIAL",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Lead Nuevo",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/abk9eTz9e4YE0MHb9KV8"
         },
         {
-          "contactName": "Contacto …60J2hq",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "contactName": "Contacto …wIdG2j",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "25 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/NlydZik5SsIHhlwIdG2j"
+        },
+        {
+          "contactName": "Contacto …3mBS7s",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "4 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/IJfPtuBuKyV67f3mBS7s"
+        },
+        {
+          "contactName": "Contacto …vt7LNq",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Lead Nuevo",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/b4zUt8PeFsgEBGvt7LNq"
+        },
+        {
+          "contactName": "Contacto …60J2hq",
+          "category": "stale_initial",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "26 días desde el alta · etapa actual: Lead Nuevo",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/PjOhP26WRq1GGw60J2hq"
         },
         {
-          "contactName": "Contacto …UoVmA0",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Lead Nuevo",
+          "contactName": "Contacto …ulMSx3",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Visita Solicitada",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/OlwxNr4bFBpNHhUoVmA0"
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/HLjmBznE76rh9L5aiUAt/contacts/detail/n9lYv8Mu1klBDLulMSx3"
         }
       ]
     },
@@ -270,31 +441,31 @@
       "name": "Capital Brokers (SUELO)",
       "locationName": "Capital Brokers (SUELO)",
       "metrics": {
-        "opportunities": 123,
-        "qualified": 42,
+        "opportunities": 132,
+        "qualified": 48,
         "visitOrLater": 10,
-        "stock": 419
+        "stock": 428
       },
       "stages": [
         {
           "label": "Nuevo Lead",
-          "count": 81
+          "count": 84
         },
         {
           "label": "Lead Calificado",
-          "count": 32
+          "count": 38
         },
         {
           "label": "Visita Realizada",
-          "count": 4
-        },
-        {
-          "label": "Visita Agendada",
-          "count": 3
+          "count": 6
         },
         {
           "label": "Seguimiento post Visita",
           "count": 2
+        },
+        {
+          "label": "Visita Agendada",
+          "count": 1
         },
         {
           "label": "Visita Solicitada",
@@ -304,11 +475,11 @@
       "sources": [
         {
           "label": "Armenia 2327",
-          "count": 42
+          "count": 48
         },
         {
           "label": "Charcas",
-          "count": 25
+          "count": 26
         },
         {
           "label": "WhatsApp",
@@ -316,7 +487,7 @@
         },
         {
           "label": "Salguero",
-          "count": 16
+          "count": 18
         },
         {
           "label": "SUELO",
@@ -335,70 +506,151 @@
           "count": 2
         }
       ],
-      "actions": [
+      "conversationSummary": {
+        "available": true,
+        "messages": 4337,
+        "contacts": 483,
+        "inbound": 1692,
+        "outbound": 2645,
+        "failedWhatsApp": 358
+      },
+      "actionBreakdown": [
         {
-          "contactName": "Contacto …I1nHwh",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "key": "visit_without_followup",
+          "label": "Visita solicitada sin seguimiento",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/46381V9P1yRT7UI1nHwh"
+          "criteria": "El contacto expresó intención de coordinar una visita y no se detectó una respuesta humana posterior.",
+          "action": "Abrir el contacto, confirmar disponibilidad y ofrecer dos horarios concretos.",
+          "count": 1
+        },
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 8
+        },
+        {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 12
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 30
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 14
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 23
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 44
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …78BhMk",
+          "category": "visit_without_followup",
+          "problem": "Visita solicitada sin seguimiento",
+          "evidence": "Pedido de visita sin respuesta humana posterior · etapa: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/Jw6UvtEJ7R2XJP78BhMk"
+        },
+        {
+          "contactName": "Contacto …2LIiEZ",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "562 h sin respuesta saliente posterior · etapa: Visita Realizada",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/ZrjbCjgJj56WSe2LIiEZ"
         },
         {
           "contactName": "Contacto …vJVpup",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/YIW61OLlesDceRvJVpup"
         },
         {
           "contactName": "Contacto …A307Ct",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "5 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/mIFRzTSQ9gzxvHA307Ct"
         },
         {
           "contactName": "Contacto …uLTxb7",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
+          "priority": "P1",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/MWKccjJB3SOJZCuLTxb7"
         },
         {
-          "contactName": "Contacto …pd5DOd",
+          "contactName": "Contacto …I1nHwh",
+          "category": "stale_initial",
           "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "evidence": "26 días desde el alta · etapa actual: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/dGvYvbvb9l6mCRpd5DOd"
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/46381V9P1yRT7UI1nHwh"
         },
         {
-          "contactName": "Contacto …YG4xna",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "contactName": "Contacto …NQkQzf",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Lead Calificado",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/Hlkkoh1VJ32DDCYG4xna"
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/0pL3qA5mvcJZbCNQkQzf"
         },
         {
-          "contactName": "Contacto …24VCkZ",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "contactName": "Contacto …XvCa5x",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "29 h sin respuesta saliente posterior · etapa: Lead Calificado",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/fbKmhAWffIqvmi24VCkZ"
-        },
-        {
-          "contactName": "Contacto …LUtxJf",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/E2betafQZwKg5oLUtxJf"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/zYJ79NHjoyGnLMO0SNQr/contacts/detail/erQmOTCgg6Z9HbXvCa5x"
         }
       ]
     },
@@ -406,27 +658,27 @@
       "name": "El Salvaje",
       "locationName": "El Salvaje",
       "metrics": {
-        "opportunities": 214,
-        "qualified": 75,
-        "visitOrLater": 13,
-        "stock": 221
+        "opportunities": 246,
+        "qualified": 82,
+        "visitOrLater": 14,
+        "stock": 249
       },
       "stages": [
         {
           "label": "1. Nuevo Lead",
-          "count": 132
+          "count": 156
         },
         {
           "label": "2. Lead Calificado",
-          "count": 62
+          "count": 68
         },
         {
           "label": "4. Visita/Reunión Solicitada",
-          "count": 9
+          "count": 10
         },
         {
           "label": "3. Derivado Dani",
-          "count": 7
+          "count": 8
         },
         {
           "label": "6. Visita/Reunión Realizada",
@@ -436,97 +688,178 @@
       "sources": [
         {
           "label": "WhatsApp",
-          "count": 89
+          "count": 105
         },
         {
           "label": "Intereses I Bs As I Forms",
-          "count": 39
+          "count": 44
         },
         {
           "label": "RBDD 09/2026",
-          "count": 31
+          "count": 33
         },
         {
           "label": "ADV+ I Bs As I Forms",
-          "count": 23
+          "count": 25
         },
         {
           "label": "Intereses I Costa I Forms",
-          "count": 22
+          "count": 24
+        },
+        {
+          "label": "Página Web",
+          "count": 8
         },
         {
           "label": "Sin dato",
           "count": 7
+        }
+      ],
+      "conversationSummary": {
+        "available": true,
+        "messages": 3038,
+        "contacts": 788,
+        "inbound": 888,
+        "outbound": 2150,
+        "failedWhatsApp": 120
+      },
+      "actionBreakdown": [
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 12
         },
         {
-          "label": "Página Web",
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 11
+        },
+        {
+          "key": "no_successful_outbound",
+          "label": "Sin primer saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.",
+          "action": "Revisar teléfono, workflow, webhook y estado de entrega.",
+          "count": 1
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 35
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
           "count": 3
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 56
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 109
         }
       ],
       "actions": [
         {
           "contactName": "Contacto …aq6dQj",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "20 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "508 h sin respuesta saliente posterior · etapa: 1. Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/eeob4nLQPLi6W6aq6dQj"
         },
         {
           "contactName": "Contacto …2PGR1H",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "20 días en la cohorte · etapa actual: 1. Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: 1. Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/IMoHSWJN2VTTyE2PGR1H"
         },
         {
-          "contactName": "Contacto …rjiFM2",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/qwyyxeIuxD8uIurjiFM2"
+          "contactName": "Contacto …lgPZx7",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "3 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/GZu83w2mcqf2zRlgPZx7"
         },
         {
           "contactName": "Contacto …z6eI9M",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/9U1mocRCmkvQ7mz6eI9M"
         },
         {
-          "contactName": "Contacto …OGCIOw",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "18 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "contactName": "Contacto …buzDEp",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en 1. Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/eiL0RE5PZXj6a4OGCIOw"
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/DN1V76lSwx7oYdbuzDEp"
         },
         {
-          "contactName": "Contacto …E3CStQ",
+          "contactName": "Contacto …rjiFM2",
+          "category": "stale_initial",
           "problem": "Lead estancado en etapa inicial",
-          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "evidence": "21 días desde el alta · etapa actual: 1. Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/ElQAvC5H3i73l5E3CStQ"
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/qwyyxeIuxD8uIurjiFM2"
         },
         {
-          "contactName": "Contacto …CNsfYc",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "contactName": "Contacto …CyYCrC",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: 4. Visita/Reunión Solicitada",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/4HL1hAy0JOnl02CNsfYc"
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/RoMl6XPgsHfroqCyYCrC"
         },
         {
-          "contactName": "Contacto …QS4GeK",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "17 días en la cohorte · etapa actual: 1. Nuevo Lead",
+          "contactName": "Contacto …vD8R56",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "364 h sin respuesta saliente posterior · etapa: 2. Lead Calificado",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/KYKrYek5jsaUoeQS4GeK"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RyfSrXpHnw2ihJAohBkK/contacts/detail/FuHXS6dhm6bAC9vD8R56"
         }
       ]
     },
@@ -534,23 +867,27 @@
       "name": "Grupo CISA",
       "locationName": "Grupo CISA",
       "metrics": {
-        "opportunities": 91,
-        "qualified": 31,
+        "opportunities": 127,
+        "qualified": 36,
         "visitOrLater": 0,
-        "stock": 431
+        "stock": 468
       },
       "stages": [
         {
           "label": "Nuevo Lead",
-          "count": 56
+          "count": 84
         },
         {
           "label": "Calificado nivel 1",
-          "count": 29
+          "count": 31
         },
         {
           "label": "Respondio",
-          "count": 4
+          "count": 7
+        },
+        {
+          "label": "Lead Calificado",
+          "count": 3
         },
         {
           "label": "Calificado nivel 2",
@@ -560,89 +897,170 @@
       "sources": [
         {
           "label": "facebook",
-          "count": 60
+          "count": 72
+        },
+        {
+          "label": "Sin dato",
+          "count": 28
         },
         {
           "label": "RBDD 07/2026",
           "count": 24
         },
         {
-          "label": "Sin dato",
-          "count": 5
-        },
-        {
           "label": "WhatsApp",
-          "count": 1
+          "count": 2
         },
         {
           "label": "ZONAPROP",
           "count": 1
         }
       ],
-      "actions": [
+      "conversationSummary": {
+        "available": true,
+        "messages": 13575,
+        "contacts": 1195,
+        "inbound": 7284,
+        "outbound": 6291,
+        "failedWhatsApp": 279
+      },
+      "actionBreakdown": [
         {
-          "contactName": "Contacto …pmy0hF",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "key": "visit_without_followup",
+          "label": "Visita solicitada sin seguimiento",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PT0kTCq46UkVBgpmy0hF"
+          "criteria": "El contacto expresó intención de coordinar una visita y no se detectó una respuesta humana posterior.",
+          "action": "Abrir el contacto, confirmar disponibilidad y ofrecer dos horarios concretos.",
+          "count": 1
         },
         {
-          "contactName": "Contacto …JrdHMR",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/Ozs468EvgJpwaxJrdHMR"
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 10
+        },
+        {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 4
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 29
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 7
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 37
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 38
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …m611Tx",
+          "category": "visit_without_followup",
+          "problem": "Visita solicitada sin seguimiento",
+          "evidence": "Pedido de visita sin respuesta humana posterior · etapa: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/xQ0nomixGn3uOem611Tx"
+        },
+        {
+          "contactName": "Contacto …7eXHCF",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "439 h sin respuesta saliente posterior · etapa: Calificado nivel 1",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/leTZXttEA6AnpR7eXHCF"
         },
         {
           "contactName": "Contacto …sWuX0v",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/w8XkWzpnoFx78WsWuX0v"
         },
         {
-          "contactName": "Contacto …K8SIQZ",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PIGcDAC3cOtnZaK8SIQZ"
-        },
-        {
           "contactName": "Contacto …Fkjta1",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/UNhXoPGhebcAqmFkjta1"
         },
         {
-          "contactName": "Contacto …yH2cik",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
+          "contactName": "Contacto …K8SIQZ",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/I63osVR5ESjPANyH2cik"
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PIGcDAC3cOtnZaK8SIQZ"
+        },
+        {
+          "contactName": "Contacto …pmy0hF",
+          "category": "stale_initial",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "26 días desde el alta · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/PT0kTCq46UkVBgpmy0hF"
+        },
+        {
+          "contactName": "Contacto …KdyXsT",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Calificado nivel 1",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/qOK1tKuAV54fzJKdyXsT"
         },
         {
           "contactName": "Contacto …COsAvq",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "535 h sin respuesta saliente posterior · etapa: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/ECGFyz5ut5hzMNCOsAvq"
-        },
-        {
-          "contactName": "Contacto …ist84k",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "21 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/4lb6BJux3QfPWVooXU6a/contacts/detail/Jf0jbf2faZ7whVist84k"
         }
       ]
     },
@@ -675,70 +1093,142 @@
           "count": 3
         }
       ],
-      "actions": [
+      "conversationSummary": {
+        "available": true,
+        "messages": 7702,
+        "contacts": 350,
+        "inbound": 3394,
+        "outbound": 4308,
+        "failedWhatsApp": 127
+      },
+      "actionBreakdown": [
         {
-          "contactName": "Contacto …KbdBjq",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/nKBlvcGuA35biZKbdBjq"
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 1
         },
         {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 6
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 4
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 3
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 2
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 2
+        }
+      ],
+      "actions": [
+        {
           "contactName": "Contacto …mtCSvp",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "20 días en la cohorte · etapa actual: Nuevo Lead",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "504 h sin respuesta saliente posterior · etapa: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/MmgqZr6W9KPXIymtCSvp"
         },
         {
-          "contactName": "Contacto …QC1CMN",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "18 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/wfnQUESvC98fQ6QC1CMN"
-        },
-        {
-          "contactName": "Contacto …SPlosk",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "17 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/lceBwKZdptQbYISPlosk"
-        },
-        {
-          "contactName": "Contacto …OrIxCU",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "16 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/jGHu0Na7L8xovyOrIxCU"
-        },
-        {
-          "contactName": "Contacto …IkeJ6y",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "15 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/PullzdKOCf7LQfIkeJ6y"
-        },
-        {
           "contactName": "Contacto …HNmMVe",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "14 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/Ldg30Ai1Ia4cWjHNmMVe"
         },
         {
-          "contactName": "Contacto …rBqmQT",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "14 días en la cohorte · etapa actual: Nuevo Lead",
+          "contactName": "Contacto …OrIxCU",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/jGHu0Na7L8xovyOrIxCU"
+        },
+        {
+          "contactName": "Contacto …QC1CMN",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/wfnQUESvC98fQ6QC1CMN"
+        },
+        {
+          "contactName": "Contacto …KbdBjq",
+          "category": "stale_initial",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "26 días desde el alta · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/nKBlvcGuA35biZKbdBjq"
+        },
+        {
+          "contactName": "Contacto …Tws5Tw",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Lead Calificado",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/4nHDMPtLurdCnKTws5Tw"
+        },
+        {
+          "contactName": "Contacto …rBqmQT",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/FqSqVPmcmmInHQrBqmQT"
+        },
+        {
+          "contactName": "Contacto …IkeJ6y",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/8Zg6hj5U6hFyORjtw5Do/contacts/detail/PullzdKOCf7LQfIkeJ6y"
         }
       ]
     },
@@ -746,39 +1236,191 @@
       "name": "SUMA Group",
       "locationName": "SUMA Group",
       "metrics": {
-        "opportunities": 0,
-        "qualified": 0,
-        "visitOrLater": 0,
-        "stock": 795
+        "opportunities": 132,
+        "qualified": 1,
+        "visitOrLater": 1,
+        "stock": 1036
       },
-      "stages": [],
-      "sources": [],
-      "actions": []
+      "stages": [
+        {
+          "label": "Etapa informativa (respondió)",
+          "count": 85
+        },
+        {
+          "label": "1er Seguimiento Chiara",
+          "count": 46
+        },
+        {
+          "label": "Visita Agendada",
+          "count": 1
+        }
+      ],
+      "sources": [
+        {
+          "label": "WhatsApp Ads -",
+          "count": 116
+        },
+        {
+          "label": "Campaña Whatsapp",
+          "count": 6
+        },
+        {
+          "label": "WhatsApp Ads - whatsapp",
+          "count": 4
+        },
+        {
+          "label": "WhatsApp",
+          "count": 3
+        },
+        {
+          "label": "Anuncio Meta",
+          "count": 1
+        },
+        {
+          "label": "Campaña WhatsApp",
+          "count": 1
+        },
+        {
+          "label": "CAMPAÑA WHATSAPP",
+          "count": 1
+        }
+      ],
+      "conversationSummary": {
+        "available": true,
+        "messages": 1715,
+        "contacts": 175,
+        "inbound": 621,
+        "outbound": 1094,
+        "failedWhatsApp": 6
+      },
+      "actionBreakdown": [
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 30
+        },
+        {
+          "key": "no_successful_outbound",
+          "label": "Sin primer saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.",
+          "action": "Revisar teléfono, workflow, webhook y estado de entrega.",
+          "count": 9
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 87
+        }
+      ],
+      "actions": [
+        {
+          "contactName": "Contacto …2av8pe",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "370 h sin respuesta saliente posterior · etapa: Etapa informativa (respondió)",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/Q3vGbP2PDsAeqh2av8pe"
+        },
+        {
+          "contactName": "Contacto …gzhaNQ",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "26 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/qHnWv7kN5nhxCwgzhaNQ"
+        },
+        {
+          "contactName": "Contacto …iLEJXj",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Etapa informativa (respondió)",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/Hb8vZTrmyt4AtliLEJXj"
+        },
+        {
+          "contactName": "Contacto …78EM0q",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "496 h sin respuesta saliente posterior · etapa: Etapa informativa (respondió)",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/Gx5kkDj55mjPNm78EM0q"
+        },
+        {
+          "contactName": "Contacto …PntsHH",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "26 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/4Vy65GaavOxHZgPntsHH"
+        },
+        {
+          "contactName": "Contacto …5wscmk",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Etapa informativa (respondió)",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/Qq5B2zPtm1zoUy5wscmk"
+        },
+        {
+          "contactName": "Contacto …mCpVwQ",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "276 h sin respuesta saliente posterior · etapa: Etapa informativa (respondió)",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/HX4humt6lYo1iRmCpVwQ"
+        },
+        {
+          "contactName": "Contacto …NpEj0Z",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "26 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/RpUAK9okWVJgIqSdmUjA/contacts/detail/UFrs5MFWLsBDIqNpEj0Z"
+        }
+      ]
     },
     {
       "name": "Urbanika",
       "locationName": "Urbanika",
       "metrics": {
-        "opportunities": 188,
-        "qualified": 77,
-        "visitOrLater": 15,
-        "stock": 1171
+        "opportunities": 207,
+        "qualified": 78,
+        "visitOrLater": 16,
+        "stock": 1186
       },
       "stages": [
         {
           "label": "Nuevo Lead",
-          "count": 111
+          "count": 129
         },
         {
           "label": "Lead Calificado",
           "count": 62
         },
         {
-          "label": "Visita Realizada",
-          "count": 7
+          "label": "Visita Solicitada",
+          "count": 8
         },
         {
-          "label": "Visita Solicitada",
+          "label": "Visita Realizada",
           "count": 7
         },
         {
@@ -789,27 +1431,27 @@
       "sources": [
         {
           "label": "Meta - Meta - Intereses generales",
-          "count": 48
+          "count": 54
         },
         {
           "label": "WhatsApp",
-          "count": 41
+          "count": 42
         },
         {
           "label": "Meta - Meta - Intereses adultos mayores",
-          "count": 30
+          "count": 33
         },
         {
           "label": "Meta - Meta - Intereses jovenes",
-          "count": 24
+          "count": 28
         },
         {
           "label": "Meta - Meta - Rmkt_COSTA",
-          "count": 22
+          "count": 24
         },
         {
           "label": "Meta - Meta - Internacional",
-          "count": 12
+          "count": 15
         },
         {
           "label": "Página Web",
@@ -820,70 +1462,160 @@
           "count": 2
         }
       ],
+      "conversationSummary": {
+        "available": true,
+        "messages": 2595,
+        "contacts": 369,
+        "inbound": 909,
+        "outbound": 1686,
+        "failedWhatsApp": 364
+      },
+      "actionBreakdown": [
+        {
+          "key": "visit_without_followup",
+          "label": "Visita solicitada sin seguimiento",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El contacto expresó intención de coordinar una visita y no se detectó una respuesta humana posterior.",
+          "action": "Abrir el contacto, confirmar disponibilidad y ofrecer dos horarios concretos.",
+          "count": 1
+        },
+        {
+          "key": "inbound_without_reply",
+          "label": "Entrante sin respuesta +30 min",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P0",
+          "criteria": "El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.",
+          "action": "Responder, reasignar o cerrar con un motivo documentado.",
+          "count": 9
+        },
+        {
+          "key": "whatsapp_failed",
+          "label": "Falla de WhatsApp sin recuperar",
+          "owner": "PIXEL",
+          "priority": "P0",
+          "criteria": "Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.",
+          "action": "Revisar número, canal, plantilla y workflow; reintentar por un canal válido.",
+          "count": 21
+        },
+        {
+          "key": "no_successful_outbound",
+          "label": "Sin primer saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.",
+          "action": "Revisar teléfono, workflow, webhook y estado de entrega.",
+          "count": 4
+        },
+        {
+          "key": "automation_only",
+          "label": "Solo automatización",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "criteria": "Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.",
+          "action": "Validar el disparador de handoff y la intervención humana esperada.",
+          "count": 78
+        },
+        {
+          "key": "commercial_signal_without_action",
+          "label": "Interés comercial sin próxima acción",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "criteria": "La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.",
+          "action": "Calificar, nutrir o descartar y dejar la próxima acción registrada.",
+          "count": 1
+        },
+        {
+          "key": "stale_initial",
+          "label": "Lead estancado en etapa inicial",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.",
+          "action": "Revisar el caso, actualizar la etapa y registrar el motivo.",
+          "count": 20
+        },
+        {
+          "key": "unassigned",
+          "label": "Oportunidad sin responsable visible",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "criteria": "La oportunidad no tiene un responsable visible en el extracto.",
+          "action": "Asignar responsable y fecha de próxima gestión.",
+          "count": 73
+        }
+      ],
       "actions": [
         {
-          "contactName": "Contacto …XYfmDR",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
+          "contactName": "Contacto …oHm4Jy",
+          "category": "visit_without_followup",
+          "problem": "Visita solicitada sin seguimiento",
+          "evidence": "Pedido de visita sin respuesta humana posterior · etapa: Visita Solicitada",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/PAqZnyFLmvJQq6XYfmDR"
-        },
-        {
-          "contactName": "Contacto …IrBPmf",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/JjUI6CLy8qWc5BIrBPmf"
-        },
-        {
-          "contactName": "Contacto …giV9lO",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/g8fgygKhHW5jGegiV9lO"
-        },
-        {
-          "contactName": "Contacto …DryScZ",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "23 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/8gPWNSLIUV4FsvDryScZ"
-        },
-        {
-          "contactName": "Contacto …SVTXEf",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/kDNMwIOKLZ9tkZSVTXEf"
-        },
-        {
-          "contactName": "Contacto …4Q8qgd",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
-          "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/eIfXak9FJpLGOF4Q8qgd"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/rGObksrqflQlMaoHm4Jy"
         },
         {
           "contactName": "Contacto …ZXOfWy",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
+          "category": "inbound_without_reply",
+          "problem": "Entrante sin respuesta +30 min",
+          "evidence": "602 h sin respuesta saliente posterior · etapa: Nuevo Lead",
           "owner": "EQUIPO COMERCIAL",
           "priority": "P0",
           "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/mFQu03Q3qWD3CFZXOfWy"
         },
         {
-          "contactName": "Contacto …dCIiES",
-          "problem": "Lead estancado en etapa inicial",
-          "evidence": "22 días en la cohorte · etapa actual: Nuevo Lead",
-          "owner": "EQUIPO COMERCIAL",
+          "contactName": "Contacto …hhLX3i",
+          "category": "whatsapp_failed",
+          "problem": "Falla de WhatsApp sin recuperar",
+          "evidence": "Último WhatsApp sin entrega recuperada · etapa: Nuevo Lead",
+          "owner": "PIXEL",
           "priority": "P0",
-          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/aNpJyzNC93kMKRdCIiES"
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/zggqQ5j9XQY9DNhhLX3i"
+        },
+        {
+          "contactName": "Contacto …Zq5JWs",
+          "category": "no_successful_outbound",
+          "problem": "Sin primer saliente exitoso",
+          "evidence": "25 días desde el alta · sin saliente exitoso",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/LIJj3tlzfPzygIZq5JWs"
+        },
+        {
+          "contactName": "Contacto …IrBPmf",
+          "category": "automation_only",
+          "problem": "Solo automatización",
+          "evidence": "3 salientes automáticos · sin intervención humana visible",
+          "owner": "PIXEL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/JjUI6CLy8qWc5BIrBPmf"
+        },
+        {
+          "contactName": "Contacto …5rPzvr",
+          "category": "commercial_signal_without_action",
+          "problem": "Interés comercial sin próxima acción",
+          "evidence": "Variable comercial detectada · continúa en Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P1",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/EDTXkV8FFyoM6s5rPzvr"
+        },
+        {
+          "contactName": "Contacto …XYfmDR",
+          "category": "stale_initial",
+          "problem": "Lead estancado en etapa inicial",
+          "evidence": "26 días desde el alta · etapa actual: Nuevo Lead",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/PAqZnyFLmvJQq6XYfmDR"
+        },
+        {
+          "contactName": "Contacto …n9A9oj",
+          "category": "unassigned",
+          "problem": "Oportunidad sin responsable visible",
+          "evidence": "Sin responsable visible · etapa actual: Lead Calificado",
+          "owner": "EQUIPO COMERCIAL",
+          "priority": "P2",
+          "ghlUrl": "https://app.gohighlevel.com/v2/location/T4oIEJyceeYrKD8VQeAN/contacts/detail/vKHlkNjHxb7MWDn9A9oj"
         }
       ]
     }
