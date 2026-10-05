@@ -39,11 +39,6 @@ const accountDefinitions = [
     tokenKeys: ['JORGE_REMAX_GHL_PRIVATE_INTEGRATION_TOKEN'],
   },
   {
-    name: 'SUMA Group',
-    locationKey: 'SUMA_GROUP_GHL_LOCATION_ID',
-    tokenKeys: ['SUMA_GROUP_GHL_PRIVATE_INTEGRATION_TOKEN'],
-  },
-  {
     name: 'Urbanika',
     locationKey: 'URBANIKA_GHL_LOCATION_ID',
     tokenKeys: ['URBANIKA_GHL_PRIVATE_INTEGRATION_TOKEN'],
@@ -53,21 +48,41 @@ const accountDefinitions = [
 const timeZone = 'America/Caracas';
 const now = new Date();
 const yesterday = new Date(now.getTime() - 86_400_000);
-const dateParts = Object.fromEntries(
-  new Intl.DateTimeFormat('en-CA', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-    .formatToParts(yesterday)
-    .filter((part) => part.type !== 'literal')
-    .map((part) => [part.type, part.value]),
-);
+function datePartsInTimezone(date) {
+  return Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(date)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  );
+}
+
+function dateStringInTimezone(date) {
+  const parts = datePartsInTimezone(date);
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+const dateParts = datePartsInTimezone(yesterday);
 const cutoffDate = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 const periodStart = `${dateParts.year}-${dateParts.month}-01`;
 const startTimestamp = Date.parse(`${periodStart}T00:00:00-04:00`);
 const endTimestamp = Date.parse(`${cutoffDate}T23:59:59.999-04:00`);
+const elapsedDays = Number(dateParts.day);
+const comparisonStart = dateStringInTimezone(
+  new Date(startTimestamp - elapsedDays * 86_400_000),
+);
+const comparisonEnd = dateStringInTimezone(new Date(startTimestamp - 1));
+const comparisonStartTimestamp = Date.parse(
+  `${comparisonStart}T00:00:00-04:00`,
+);
+const comparisonEndTimestamp = Date.parse(
+  `${comparisonEnd}T23:59:59.999-04:00`,
+);
 
 const normalize = (value) =>
   String(value || '')
@@ -232,16 +247,28 @@ const actionDefinitions = [
     priority: 'P1',
     criteria:
       'Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.',
-    action: 'Validar el disparador de handoff y la intervención humana esperada.',
+    action:
+      'Validar el disparador de handoff y la intervención humana esperada.',
   },
   {
-    key: 'commercial_signal_without_action',
-    label: 'Interés comercial sin próxima acción',
-    owner: 'EQUIPO COMERCIAL',
+    key: 'qualification_mismatch',
+    label: 'Posible error de calificación del bot',
+    owner: 'PIXEL',
     priority: 'P1',
     criteria:
-      'La conversación menciona una variable comercial, pero la oportunidad continúa en una etapa inicial.',
-    action: 'Calificar, nutrir o descartar y dejar la próxima acción registrada.',
+      'Hay una señal comercial relevante en la conversación, pero la oportunidad continúa en una etapa inicial.',
+    action:
+      'Validar la conversación y la nota del bot; corregir etapa o ajustar el criterio de calificación.',
+  },
+  {
+    key: 'no_response_after_attempts',
+    label: 'Sin respuesta después de 3+ intentos',
+    owner: 'EQUIPO COMERCIAL',
+    priority: 'P2',
+    criteria:
+      'Se registran al menos tres salientes exitosos y ningún mensaje entrante del contacto.',
+    action:
+      'Cerrar la secuencia, mover a no responde o descarte según el criterio acordado y registrar el motivo.',
   },
   {
     key: 'stale_initial',
@@ -285,6 +312,43 @@ const visitSignal =
   /\b(visita|visitar|conocer|recorrer|reunion|agendar|coordinar|turno|cita|dia|hora|horario)\b/;
 const commercialSignal =
   /\b(precio|valor|cuota|anticipo|financiacion|financiar|disponibilidad|disponible|tipologia|ambiente|metros|m2|inversion|invertir|entrega|posesion)\b/;
+const readyProductSignal =
+  /\b(entrega inmediata|listo para|terminado|terminada|mudanza inmediata|para mudarme ya|posesion inmediata)\b/;
+const priceSignal =
+  /\b(precio|valor|cuota|anticipo|financiacion|financiar|presupuesto|caro|costoso)\b/;
+
+const conversationSegmentDefinitions = [
+  {
+    key: 'active_interest',
+    label: 'Interés activo sin próximo paso',
+    owner: 'EQUIPO COMERCIAL',
+    action: 'Contactar y acordar una próxima acción concreta.',
+  },
+  {
+    key: 'ready_product',
+    label: 'Busca producto listo o entrega inmediata',
+    owner: 'EQUIPO COMERCIAL',
+    action: 'Enviar opciones disponibles que respondan a esa condición.',
+  },
+  {
+    key: 'price_financing',
+    label: 'Consulta u objeción de precio/financiación',
+    owner: 'EQUIPO COMERCIAL',
+    action: 'Responder con propuesta, alternativas y condiciones vigentes.',
+  },
+  {
+    key: 'no_response',
+    label: 'Sin respuesta luego de varios intentos',
+    owner: 'EQUIPO COMERCIAL',
+    action: 'Cerrar la secuencia y ordenar la etapa con motivo.',
+  },
+  {
+    key: 'technical_failure',
+    label: 'Falla técnica de contacto',
+    owner: 'PIXEL',
+    action: 'Revisar canal, número, plantilla y automatización.',
+  },
+];
 
 function messageTimestamp(message) {
   return Date.parse(message.dateAdded || message.createdAt || '');
@@ -305,7 +369,10 @@ function isSuccessfulOutbound(message) {
 function isHumanOutbound(message) {
   if (!isSuccessfulOutbound(message)) return false;
   const source = normalize(message.source);
-  return !automatedSources.has(source) && (Boolean(message.userId) || Boolean(source));
+  return (
+    !automatedSources.has(source) &&
+    (Boolean(message.userId) || Boolean(source))
+  );
 }
 
 function hasSignal(message, expression) {
@@ -377,7 +444,10 @@ function actionForOpportunity(opportunity, stageName, locationId, messages) {
       (message) => messageTimestamp(message) > messageTimestamp(latestInbound),
     )
   ) {
-    const waitHours = Math.max(1, Math.floor(minutesUntilCutoff(latestInbound) / 60));
+    const waitHours = Math.max(
+      1,
+      Math.floor(minutesUntilCutoff(latestInbound) / 60),
+    );
     return createAction(
       opportunity,
       stageName,
@@ -420,10 +490,33 @@ function actionForOpportunity(opportunity, stageName, locationId, messages) {
     );
   }
 
+  const signalMessage = [...sortedMessages]
+    .reverse()
+    .find((message) => hasSignal(message, commercialSignal));
+  if (signalMessage && isNewLead(stageName)) {
+    return createAction(
+      opportunity,
+      stageName,
+      locationId,
+      'qualification_mismatch',
+      `Señal comercial detectable · continúa en ${stageName}`,
+    );
+  }
+
+  if (successfulOutbounds.length >= 3 && !sortedMessages.some(isInbound)) {
+    return createAction(
+      opportunity,
+      stageName,
+      locationId,
+      'no_response_after_attempts',
+      `${successfulOutbounds.length} salientes exitosos · ningún entrante`,
+    );
+  }
+
   if (
     successfulOutbounds.length &&
-    successfulOutbounds.every(
-      (message) => automatedSources.has(normalize(message.source)),
+    successfulOutbounds.every((message) =>
+      automatedSources.has(normalize(message.source)),
     )
   ) {
     return createAction(
@@ -435,20 +528,55 @@ function actionForOpportunity(opportunity, stageName, locationId, messages) {
     );
   }
 
-  const signalMessage = [...sortedMessages]
-    .reverse()
-    .find((message) => hasSignal(message, commercialSignal));
-  if (signalMessage && isNewLead(stageName)) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'commercial_signal_without_action',
-      `Variable comercial detectada · continúa en ${stageName}`,
-    );
+  return fallbackAction(opportunity, stageName, locationId, ageDays);
+}
+
+function conversationSegmentForOpportunity(
+  opportunity,
+  stageName,
+  locationId,
+  messages,
+) {
+  const contactId = opportunity.contactId || opportunity.contact?.id;
+  if (!contactId) return null;
+  const ordered = [...messages]
+    .filter((message) => Number.isFinite(messageTimestamp(message)))
+    .sort((a, b) => messageTimestamp(a) - messageTimestamp(b));
+  const inbounds = ordered.filter(isInbound);
+  const successfulOutbounds = ordered.filter(isSuccessfulOutbound);
+  const failedWhatsApp = ordered.some(
+    (message) =>
+      isOutbound(message) &&
+      normalize(message.messageType).includes('whatsapp') &&
+      failedStatuses.has(normalize(message.status)),
+  );
+  let key;
+
+  if (inbounds.some((message) => hasSignal(message, readyProductSignal))) {
+    key = 'ready_product';
+  } else if (inbounds.some((message) => hasSignal(message, priceSignal))) {
+    key = 'price_financing';
+  } else if (
+    isNewLead(stageName) &&
+    inbounds.some(
+      (message) =>
+        hasSignal(message, commercialSignal) || hasSignal(message, visitSignal),
+    )
+  ) {
+    key = 'active_interest';
+  } else if (successfulOutbounds.length >= 3 && !inbounds.length) {
+    key = 'no_response';
+  } else if (failedWhatsApp) {
+    key = 'technical_failure';
+  } else {
+    return null;
   }
 
-  return fallbackAction(opportunity, stageName, locationId, ageDays);
+  return {
+    key,
+    contactName: protectedContactLabel(contactId),
+    ghlUrl: `https://app.gohighlevel.com/v2/location/${locationId}/contacts/detail/${contactId}`,
+  };
 }
 
 function fallbackAction(opportunity, stageName, locationId, ageDays) {
@@ -539,6 +667,10 @@ async function extractAccount(definition) {
   let messageAccess = true;
   try {
     messages = await listMessages(token, locationId);
+    if (!messages.length && allOpportunities.length) {
+      await new Promise((resolve) => setTimeout(resolve, 1_000));
+      messages = await listMessages(token, locationId);
+    }
   } catch (error) {
     messageAccess = false;
     console.warn(`\n  Mensajes no disponibles: ${error.message}`);
@@ -558,17 +690,33 @@ async function extractAccount(definition) {
       timestamp <= endTimestamp
     );
   });
-  const enriched = cohort.map((opportunity) => ({
+  const comparisonCohort = allOpportunities.filter((opportunity) => {
+    const timestamp = Date.parse(opportunity.createdAt || '');
+    return (
+      Number.isFinite(timestamp) &&
+      timestamp >= comparisonStartTimestamp &&
+      timestamp <= comparisonEndTimestamp
+    );
+  });
+  const enrichOpportunity = (opportunity) => ({
     ...opportunity,
     stageName:
       stageNames.get(opportunity.pipelineStageId) ||
       opportunity.pipelineStageName ||
       'Sin etapa',
-  }));
+  });
+  const enriched = cohort.map(enrichOpportunity);
+  const comparisonEnriched = comparisonCohort.map(enrichOpportunity);
   const qualified = enriched.filter((item) =>
     isQualifiedOrLater(item.stageName),
   ).length;
   const visitOrLater = enriched.filter((item) =>
+    isVisitOrLater(item.stageName),
+  ).length;
+  const comparisonQualified = comparisonEnriched.filter((item) =>
+    isQualifiedOrLater(item.stageName),
+  ).length;
+  const comparisonVisitOrLater = comparisonEnriched.filter((item) =>
     isVisitOrLater(item.stageName),
   ).length;
   const candidates = enriched
@@ -609,6 +757,41 @@ async function extractAccount(definition) {
       normalize(message.messageType).includes('whatsapp') &&
       failedStatuses.has(normalize(message.status)),
   ).length;
+  const conversationSegmentCandidates = enriched
+    .map((item) => {
+      const contactId = item.contactId || item.contact?.id;
+      return conversationSegmentForOpportunity(
+        item,
+        item.stageName,
+        locationId,
+        messagesByContact.get(contactId) || [],
+      );
+    })
+    .filter(Boolean);
+  const conversationSegments = conversationSegmentDefinitions
+    .map((definition) => {
+      const contacts = conversationSegmentCandidates.filter(
+        (candidate) => candidate.key === definition.key,
+      );
+      return {
+        ...definition,
+        count: contacts.length,
+        contacts: contacts.slice(0, 8).map(({ contactName, ghlUrl }) => ({
+          contactName,
+          ghlUrl,
+        })),
+      };
+    })
+    .filter((segment) => segment.count > 0);
+  const missingSource = enriched.filter(
+    (item) => !String(item.source || '').trim(),
+  ).length;
+  const whatsappSource = enriched.filter((item) =>
+    /whatsapp/.test(normalize(item.source)),
+  ).length;
+  const unassigned = enriched.filter(
+    (item) => !(item.assignedTo || item.contact?.assignedTo),
+  ).length;
 
   const location = locationData.location || locationData;
   return {
@@ -620,6 +803,14 @@ async function extractAccount(definition) {
       visitOrLater,
       stock: allOpportunities.length,
     },
+    comparison: {
+      periodStart: comparisonStart,
+      periodEnd: comparisonEnd,
+      opportunities: comparisonEnriched.length,
+      qualified: comparisonQualified,
+      visitOrLater: comparisonVisitOrLater,
+      note: 'Comparación con una cohorte anterior de igual duración; las etapas se leen en su estado actual.',
+    },
     stages: countBy(enriched.map((item) => item.stageName)),
     sources: countBy(enriched.map((item) => item.source)).slice(0, 8),
     conversationSummary: {
@@ -630,6 +821,15 @@ async function extractAccount(definition) {
       outbound: outboundMessages.length,
       failedWhatsApp: failedWhatsAppCount,
     },
+    dataQuality: {
+      missingSource,
+      whatsappSource,
+      unassigned,
+      failedWhatsappRate: outboundMessages.length
+        ? (failedWhatsAppCount / outboundMessages.length) * 100
+        : 0,
+    },
+    conversationSegments,
     actionBreakdown,
     actions,
   };
@@ -650,6 +850,8 @@ const payload = {
   cutoffDate,
   periodStart,
   periodEnd: cutoffDate,
+  comparisonStart,
+  comparisonEnd,
   timeZone,
   methodology:
     'Cohorte de oportunidades creadas durante el mes hasta el cierre de ayer; la etapa mostrada es la etapa actual al momento de la extracción.',

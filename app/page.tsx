@@ -143,7 +143,12 @@ const accounts: Account[] = [
   connectedAccount('El Salvaje', 'Cuenta publicitaria pendiente'),
   connectedAccount('Grupo CISA'),
   connectedAccount('Jorge Musa Remax'),
-  connectedAccount('SUMA Group'),
+  {
+    name: 'SUMA Group',
+    status: 'Excluida',
+    note: 'Cliente dado de baja · sin nuevas extracciones desde octubre de 2026',
+    reportEnabled: false,
+  },
   {
     name: 'Terracent',
     status: 'Excluida',
@@ -169,30 +174,23 @@ const problemContacts: ProblemContact[] = ghlReport.accounts.flatMap(
 
 const periods: Period[] = [
   {
-    id: '2026-09-mtd',
-    label: `1–${Number(ghlReport.periodEnd.slice(-2))} sep 2026`,
+    id: 'current-mtd',
+    label: `${formatShortDate(ghlReport.periodStart)}–${formatShortDate(ghlReport.periodEnd)}`,
     cadence: 'Mensual',
     available: true,
   },
   {
-    id: '2026-08-h2',
-    label: '16–31 ago 2026',
+    id: 'comparison',
+    label: `${formatShortDate(ghlReport.comparisonStart)}–${formatShortDate(ghlReport.comparisonEnd)} · comparación`,
     cadence: 'Quincenal',
     available: false,
   },
   {
-    id: '2026-08-h1',
-    label: '1–15 ago 2026',
-    cadence: 'Quincenal',
-    available: false,
-  },
-  {
-    id: '2026-09',
-    label: 'Septiembre 2026',
+    id: 'previous-month',
+    label: 'Septiembre 2026 · histórico en preparación',
     cadence: 'Mensual',
     available: false,
   },
-  { id: '2026-08', label: 'Agosto 2026', cadence: 'Mensual', available: false },
 ];
 
 const crmStages = [
@@ -749,7 +747,7 @@ function AccountCard({
           </span>
           <small>
             {metrics
-              ? `${metrics.qualified} calificados`
+              ? `${metrics.qualified} calificados o posteriores`
               : 'Avance a calificado'}
           </small>
         </div>
@@ -857,7 +855,7 @@ function PeriodControl({
       <p>
         <strong>{current.cadence}</strong>
         {current.available
-          ? 'Corte base disponible. La comparación se activará con el próximo corte.'
+          ? 'Corte disponible con referencia automática contra una cohorte anterior de igual duración.'
           : 'Este período todavía no tiene una carga consolidada.'}
       </p>
     </section>
@@ -2514,7 +2512,10 @@ function ConversationPulse({ account }: { account: ExtractedAccount }) {
   const summary = account.conversationSummary;
 
   return (
-    <section className="conversation-pulse" aria-label="Actividad conversacional">
+    <section
+      className="conversation-pulse"
+      aria-label="Actividad conversacional"
+    >
       <article>
         <MessageCircle />
         <div>
@@ -2585,6 +2586,193 @@ function ActionBreakdown({
   );
 }
 
+function MetricDelta({
+  current,
+  previous,
+  suffix = ' pp',
+}: {
+  current: number;
+  previous: number;
+  suffix?: string;
+}) {
+  const delta = current - previous;
+  const direction = delta > 0.05 ? 'up' : delta < -0.05 ? 'down' : 'flat';
+  const prefix = delta > 0 ? '+' : '';
+
+  return (
+    <small className={`metric-delta ${direction}`}>
+      {prefix}
+      {delta.toFixed(1).replace('.', ',')}
+      {suffix} vs. cohorte anterior
+    </small>
+  );
+}
+
+function ConversationSegments({
+  account,
+  showContacts = false,
+}: {
+  account: ExtractedAccount;
+  showContacts?: boolean;
+}) {
+  if (!account.conversationSegments.length) {
+    return (
+      <section className="conversation-segments-empty">
+        <MessageCircle />
+        <div>
+          <strong>Sin segmentos accionables en esta cohorte</strong>
+          <p>
+            No hubo conversaciones suficientes para clasificar motivos con los
+            criterios actuales.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="conversation-segments">
+      {account.conversationSegments.map((segment) => (
+        <article key={segment.key}>
+          <header>
+            <strong>{segment.count}</strong>
+            <Badge variant="outline">{segment.owner}</Badge>
+          </header>
+          <h3>{segment.label}</h3>
+          <p>{segment.action}</p>
+          {showContacts && segment.contacts.length > 0 && (
+            <div className="segment-contacts">
+              {segment.contacts.map((contact) => (
+                <a
+                  key={contact.ghlUrl}
+                  href={contact.ghlUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {contact.contactName} <ArrowUpRight />
+                </a>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function diagnosticTone(
+  value: number,
+  greenAt: number,
+  yellowAt: number,
+  inverse = false,
+) {
+  if (inverse) {
+    if (value <= greenAt) return 'green';
+    if (value <= yellowAt) return 'yellow';
+    return 'red';
+  }
+  if (value >= greenAt) return 'green';
+  if (value >= yellowAt) return 'yellow';
+  return 'red';
+}
+
+function WeeklyDiagnosis({ account }: { account: ExtractedAccount }) {
+  const total = account.metrics.opportunities;
+  const qualifiedRate = percentage(account.metrics.qualified, total);
+  const visitRate = percentage(account.metrics.visitOrLater, total);
+  const previousQualifiedRate = percentage(
+    account.comparison.qualified,
+    account.comparison.opportunities,
+  );
+  const previousVisitRate = percentage(
+    account.comparison.visitOrLater,
+    account.comparison.opportunities,
+  );
+  const missingSourceRate = percentage(
+    account.dataQuality.missingSource,
+    total,
+  );
+  const whatsappSourceRate = percentage(
+    account.dataQuality.whatsappSource,
+    total,
+  );
+  const sourceTone = !total
+    ? 'pending'
+    : missingSourceRate > 15
+      ? 'red'
+      : missingSourceRate > 5 || whatsappSourceRate > 70
+        ? 'yellow'
+        : 'green';
+  const items = [
+    {
+      label: 'Avance acumulado a calificado',
+      value: formatPercent(qualifiedRate),
+      tone: total ? diagnosticTone(qualifiedRate, 25, 15) : 'pending',
+      note: `${account.metrics.qualified} oportunidades están en Calificado, Visita o una etapa posterior.`,
+      action:
+        qualifiedRate < 15
+          ? 'Revisar calidad de campañas y una muestra de decisiones del bot.'
+          : 'Mantener criterio y observar evolución en el próximo corte.',
+      delta: { current: qualifiedRate, previous: previousQualifiedRate },
+    },
+    {
+      label: 'Avance acumulado a visita',
+      value: formatPercent(visitRate),
+      tone: total ? diagnosticTone(visitRate, 8, 3) : 'pending',
+      note: `${account.metrics.visitOrLater} oportunidades están en Visita o una etapa posterior.`,
+      action:
+        visitRate < 3
+          ? 'Revisar seguimiento comercial y propuesta de próximo paso.'
+          : 'Identificar qué conversaciones convierten y replicar el patrón.',
+      delta: { current: visitRate, previous: previousVisitRate },
+    },
+    {
+      label: 'Atribución de fuente',
+      value: formatPercent(100 - missingSourceRate),
+      tone: sourceTone,
+      note: `${account.dataQuality.missingSource} sin fuente · ${account.dataQuality.whatsappSource} quedan atribuidos a WhatsApp.`,
+      action:
+        missingSourceRate > 5 || whatsappSourceRate > 70
+          ? 'Validar que las fuentes específicas se asignen antes del fallback WhatsApp.'
+          : 'Cobertura saludable; mantener WhatsApp como fuente por defecto final.',
+      delta: null,
+    },
+    {
+      label: 'Falla de envíos WhatsApp',
+      value: formatPercent(account.dataQuality.failedWhatsappRate),
+      tone: diagnosticTone(account.dataQuality.failedWhatsappRate, 5, 12, true),
+      note: 'Tasa sobre mensajes salientes del período; un error no implica que el caso siga abierto.',
+      action:
+        account.dataQuality.failedWhatsappRate > 5
+          ? 'Investigar plantillas, números y workflows antes de proponer un ajuste.'
+          : 'Conexión operativa sin una señal crítica en este indicador.',
+      delta: null,
+    },
+  ] as const;
+
+  return (
+    <section className="weekly-diagnosis">
+      {items.map((item) => (
+        <article key={item.label} className={`diagnosis-${item.tone}`}>
+          <header>
+            <span>{item.label}</span>
+            <i />
+          </header>
+          <strong>{item.value}</strong>
+          {item.delta && (
+            <MetricDelta
+              current={item.delta.current}
+              previous={item.delta.previous}
+            />
+          )}
+          <p>{item.note}</p>
+          <footer>{item.action}</footer>
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function ClientCommercialReading({
   account,
   reportAccount,
@@ -2612,8 +2800,8 @@ function ClientCommercialReading({
           <h3>{accountDecision(account)}</h3>
           <p>
             El {formatPercent(visitRate)} de la cohorte se encuentra hoy en
-            Visita o una etapa posterior. Es una fotografía de etapa actual,
-            no una conversión histórica entre pasos.
+            Visita o una etapa posterior. Es una fotografía de etapa actual, no
+            una conversión histórica entre pasos.
           </p>
         </article>
         <article>
@@ -2639,6 +2827,13 @@ function ClientCommercialReading({
       </section>
 
       <SectionHeader
+        kicker="Qué dicen las conversaciones"
+        title="Motivos agrupados para convertir lectura en acción"
+        note="Una oportunidad se asigna al motivo accionable más relevante detectado"
+      />
+      <ConversationSegments account={reportAccount} />
+
+      <SectionHeader
         kicker="Acciones recomendadas"
         title="Tres decisiones que puede llevar el PM"
         note="La ejecución detallada y los contactos quedan en la vista Interno"
@@ -2653,9 +2848,9 @@ function ClientCommercialReading({
           </h3>
         </div>
         <p>
-          Los criterios conversacionales son señales automáticas para
-          priorizar revisión. El equipo valida el contexto en GHL antes de
-          afirmar una causa o cambiar la etapa de una oportunidad.
+          Los criterios conversacionales son señales automáticas para priorizar
+          revisión. El equipo valida el contexto en GHL antes de afirmar una
+          causa o cambiar la etapa de una oportunidad.
         </p>
       </section>
     </>
@@ -2665,6 +2860,18 @@ function ClientCommercialReading({
 function InternalOperatingView({ account }: { account: ExtractedAccount }) {
   return (
     <>
+      <SectionHeader
+        kicker="Diagnóstico semanal"
+        title="Qué está saludable y qué debemos investigar"
+        note={`Comparación contra ${formatShortDate(account.comparison.periodStart)}–${formatShortDate(account.comparison.periodEnd)}, una cohorte de igual duración`}
+      />
+      <WeeklyDiagnosis account={account} />
+      <SectionHeader
+        kicker="Conversaciones accionables"
+        title="Motivos reales y contactos que los componen"
+        note="Los enlaces abren el registro en GHL; validar contexto antes de cambiar etapas"
+      />
+      <ConversationSegments account={account} showContacts />
       <SectionHeader
         kicker="Mapa de alertas"
         title="Problemas priorizados por impacto comercial"
@@ -2762,19 +2969,38 @@ function ConnectedAccountReport({
           <span>{metrics.opportunities}</span>
           <strong>Leads del período</strong>
           <p>
-            Oportunidades creadas entre el 1 y el{' '}
-            {Number(ghlReport.periodEnd.slice(-2))} de septiembre.
+            Oportunidades creadas entre {formatShortDate(ghlReport.periodStart)}{' '}
+            y {formatShortDate(ghlReport.periodEnd)}.
           </p>
+          <MetricDelta
+            current={metrics.opportunities}
+            previous={extracted.comparison.opportunities}
+            suffix=" leads"
+          />
         </article>
         <article>
           <span>{formatPercent(qualifiedRate)}</span>
-          <strong>{metrics.qualified} en calificado o posterior</strong>
-          <p>Lectura por nombre de la etapa actual del CRM.</p>
+          <strong>{metrics.qualified} calificados acumulados</strong>
+          <p>Incluye Calificado, Visita y todas las etapas posteriores.</p>
+          <MetricDelta
+            current={qualifiedRate}
+            previous={percentage(
+              extracted.comparison.qualified,
+              extracted.comparison.opportunities,
+            )}
+          />
         </article>
         <article>
           <span>{formatPercent(visitRate)}</span>
           <strong>{metrics.visitOrLater} en visita o posterior</strong>
           <p>Incluye visita, negociación, reserva y cierre.</p>
+          <MetricDelta
+            current={visitRate}
+            previous={percentage(
+              extracted.comparison.visitOrLater,
+              extracted.comparison.opportunities,
+            )}
+          />
         </article>
         <article>
           <span>{metrics.stock ?? 0}</span>
