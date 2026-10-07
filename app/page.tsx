@@ -85,6 +85,12 @@ type ProblemContact = {
   owner: 'PIXEL' | 'EQUIPO COMERCIAL';
   priority: 'P0' | 'P1' | 'P2';
   ghlUrl: string;
+  action?: string;
+  assignedOwner?: string;
+  nextStep?: string;
+  contextStatus?: string;
+  acceptance?: string;
+  stageName?: string;
 };
 
 type ExtractedAccount = (typeof ghlReport.accounts)[number];
@@ -134,12 +140,10 @@ const accounts: Account[] = [
   connectedAccount('Adolma'),
   connectedAccount('Alessandri'),
   connectedAccount('Capital Brokers (SUELO)', 'Informe comercial disponible'),
-  {
-    name: 'Capital Brokers - WOW 1',
-    status: 'Excluida',
-    note: 'Fuera del alcance de esta implementación',
-    reportEnabled: false,
-  },
+  connectedAccount(
+    'Capital Brokers - WOW 1',
+    'CRM y bot; paid media a cargo de Martín',
+  ),
   connectedAccount('El Salvaje', 'Cuenta publicitaria pendiente'),
   connectedAccount('Grupo CISA'),
   connectedAccount('Jorge Musa Remax'),
@@ -149,19 +153,10 @@ const accounts: Account[] = [
     note: 'Cliente dado de baja · sin nuevas extracciones desde octubre de 2026',
     reportEnabled: false,
   },
-  {
-    name: 'Terracent',
-    status: 'Excluida',
-    note: 'Fuera del alcance de esta implementación',
-    reportEnabled: false,
-  },
+  connectedAccount('Terracent'),
   connectedAccount('Urbanika'),
-  {
-    name: 'YUD Desarrollos',
-    status: 'Excluida',
-    note: 'Fuera del alcance de esta implementación',
-    reportEnabled: false,
-  },
+  connectedAccount('YUD Desarrollos'),
+  connectedAccount('Bauen'),
 ];
 const capital = accounts[2];
 
@@ -469,30 +464,33 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat('es-AR').format(value);
 }
 
-function accountHealth(account: Account): Health {
-  if (!account.metrics) return 'pending';
-  const rate = percentage(
-    account.metrics.qualified,
-    account.metrics.opportunities,
-  );
-  if (rate > 25) return 'green';
-  if (rate >= 15) return 'yellow';
-  return 'red';
+function accountHealth(_account: Account): Health {
+  // Current-stage percentages cannot establish health without account-specific criteria.
+  return 'pending';
 }
 
 function accountDecision(account: Account) {
   if (!account.metrics) return 'Completar la primera extracción de datos.';
   if (!account.metrics.opportunities) {
-    return 'Validar la entrada de leads: no se registran oportunidades nuevas en el período.';
+    return 'No hubo oportunidades nuevas en este corte; validar captación y revisar el stock antiguo por separado.';
   }
-  const health = accountHealth(account);
-  if (health === 'red') {
-    return 'Priorizar la conversión de leads nuevos antes de aumentar la inversión.';
+  const review = extractedAccountByName.get(account.name);
+  const visit = review?.actionBreakdown.find(
+    (a) => a.key === 'visit_without_followup',
+  );
+  if (visit) {
+    return `Revisar ${visit.count} pedidos explícitos de visita y confirmar la próxima gestión comercial.`;
   }
-  if (health === 'yellow') {
-    return 'Revisar los leads estancados y fortalecer el avance a visita.';
+  const qualification = review?.actionBreakdown.find(
+    (a) => a.key === 'qualification_mismatch',
+  );
+  if (qualification) {
+    return `Validar ${qualification.count} candidatos de calificación contra el criterio aprobado de esta cuenta.`;
   }
-  return 'Sostener la calificación y concentrar la mejora en visitas y seguimiento.';
+  return (
+    review?.actionBreakdown[0]?.action ||
+    'Sin candidatos detectados en esta cohorte; esto no demuestra salud comercial ni cubre el stock antiguo.'
+  );
 }
 
 function healthLabel(health: Health) {
@@ -500,7 +498,7 @@ function healthLabel(health: Health) {
     green: 'Salud verde',
     yellow: 'Salud amarilla',
     red: 'Salud roja',
-    pending: 'Sin datos',
+    pending: 'Criterio por validar',
   }[health];
 }
 
@@ -2211,7 +2209,7 @@ function ContactActionTable({ accountName }: { accountName: string }) {
                 <th>Evidencia</th>
                 <th>Responsable</th>
                 <th>Prioridad</th>
-                <th>Acción</th>
+                <th>Acción y comprobación de cierre</th>
               </tr>
             </thead>
             <tbody>
@@ -2222,7 +2220,13 @@ function ContactActionTable({ accountName }: { accountName: string }) {
                   </td>
                   <td>{contact.problem}</td>
                   <td>{contact.evidence}</td>
-                  <td>{contact.owner}</td>
+                  <td>
+                    {contact.owner}
+                    <br />
+                    <small>
+                      {contact.assignedOwner ?? 'Responsable por confirmar'}
+                    </small>
+                  </td>
                   <td>
                     <Badge
                       variant={
@@ -2233,6 +2237,21 @@ function ContactActionTable({ accountName }: { accountName: string }) {
                     </Badge>
                   </td>
                   <td>
+                    <p>
+                      {contact.action ??
+                        'Validar el contexto antes de decidir.'}
+                    </p>
+                    {contact.nextStep && <p>{contact.nextStep}</p>}
+                    {contact.contextStatus && (
+                      <p>
+                        <small>{contact.contextStatus}</small>
+                      </p>
+                    )}
+                    {contact.acceptance && (
+                      <p>
+                        <small>Cierre: {contact.acceptance}</small>
+                      </p>
+                    )}
                     <a href={contact.ghlUrl} target="_blank" rel="noreferrer">
                       Abrir en GHL <ArrowUpRight />
                     </a>
@@ -2620,10 +2639,11 @@ function ConversationSegments({
       <section className="conversation-segments-empty">
         <MessageCircle />
         <div>
-          <strong>Sin segmentos accionables en esta cohorte</strong>
+          <strong>Sin candidatos detectados con estos criterios</strong>
           <p>
-            No hubo conversaciones suficientes para clasificar motivos con los
-            criterios actuales.
+            Consultar la cobertura de lectura antes de concluir que no existen
+            casos accionables. Esto no acredita salud comercial ni ausencia de
+            problemas.
           </p>
         </div>
       </section>
@@ -2660,20 +2680,70 @@ function ConversationSegments({
   );
 }
 
-function diagnosticTone(
-  value: number,
-  greenAt: number,
-  yellowAt: number,
-  inverse = false,
-) {
-  if (inverse) {
-    if (value <= greenAt) return 'green';
-    if (value <= yellowAt) return 'yellow';
-    return 'red';
-  }
-  if (value >= greenAt) return 'green';
-  if (value >= yellowAt) return 'yellow';
-  return 'red';
+function CommercialReviewSummary({ account }: { account: ExtractedAccount }) {
+  const review = (
+    account as ExtractedAccount & {
+      commercialReview?: {
+        reviewedOpportunities: number;
+        reviewedContacts: number;
+        completeHistories: number;
+        withCommercialSignal: number;
+        qualificationCandidates: number;
+        activeWithoutVisibleStep: number;
+        withVisibleStep: number;
+        limitations: string;
+      };
+    }
+  ).commercialReview;
+  if (!review)
+    return (
+      <p>
+        Este corte todavía no tiene la revisión comercial nueva. No presentarlo
+        como diagnóstico completo.
+      </p>
+    );
+  return (
+    <>
+      <section
+        className="conversation-pulse"
+        aria-label="Revisión comercial prioritaria"
+      >
+        <article>
+          <MessageCircle />
+          <span>Historiales completos</span>
+          <strong>
+            {review.completeHistories}/{review.reviewedOpportunities}
+          </strong>
+          <p>
+            {review.reviewedContacts} contactos distintos; el denominador cuenta
+            oportunidades.
+          </p>
+        </article>
+        <article>
+          <Target />
+          <span>Con señal comercial</span>
+          <strong>{review.withCommercialSignal}</strong>
+          <p>Respuesta contextualizada; no basta el saludo del anuncio.</p>
+        </article>
+        <article>
+          <FileSearch />
+          <span>Calificación por validar</span>
+          <strong>{review.qualificationCandidates}</strong>
+          <p>Interés en etapa inicial. No son errores del bot confirmados.</p>
+        </article>
+        <article>
+          <CalendarClock />
+          <span>Sin próximo paso visible</span>
+          <strong>{review.activeWithoutVisibleStep}</strong>
+          <p>Contrastar tareas, citas y acuerdos externos antes de actuar.</p>
+        </article>
+      </section>
+      <section className="method-note">
+        <Database />
+        <p>{review.limitations}</p>
+      </section>
+    </>
+  );
 }
 
 function WeeklyDiagnosis({ account }: { account: ExtractedAccount }) {
@@ -2692,60 +2762,41 @@ function WeeklyDiagnosis({ account }: { account: ExtractedAccount }) {
     account.dataQuality.missingSource,
     total,
   );
-  const whatsappSourceRate = percentage(
-    account.dataQuality.whatsappSource,
-    total,
-  );
-  const sourceTone = !total
-    ? 'pending'
-    : missingSourceRate > 15
-      ? 'red'
-      : missingSourceRate > 5 || whatsappSourceRate > 70
-        ? 'yellow'
-        : 'green';
   const items = [
     {
-      label: 'Avance acumulado a calificado',
+      label: 'Calificado o posterior · foto actual',
       value: formatPercent(qualifiedRate),
-      tone: total ? diagnosticTone(qualifiedRate, 25, 15) : 'pending',
+      tone: 'pending',
       note: `${account.metrics.qualified} oportunidades están en Calificado, Visita o una etapa posterior.`,
       action:
-        qualifiedRate < 15
-          ? 'Revisar calidad de campañas y una muestra de decisiones del bot.'
-          : 'Mantener criterio y observar evolución en el próximo corte.',
+        'Contrastar conversaciones y criterio de cada cuenta; el porcentaje solo no demuestra fallo del bot ni calidad de campaña.',
       delta: { current: qualifiedRate, previous: previousQualifiedRate },
     },
     {
-      label: 'Avance acumulado a visita',
+      label: 'Visita o posterior · foto actual',
       value: formatPercent(visitRate),
-      tone: total ? diagnosticTone(visitRate, 8, 3) : 'pending',
+      tone: 'pending',
       note: `${account.metrics.visitOrLater} oportunidades están en Visita o una etapa posterior.`,
       action:
-        visitRate < 3
-          ? 'Revisar seguimiento comercial y propuesta de próximo paso.'
-          : 'Identificar qué conversaciones convierten y replicar el patrón.',
+        'Separar visita solicitada, agendada y realizada; validar próximo paso con comercial.',
       delta: { current: visitRate, previous: previousVisitRate },
     },
     {
       label: 'Atribución de fuente',
       value: formatPercent(100 - missingSourceRate),
-      tone: sourceTone,
+      tone: 'pending',
       note: `${account.dataQuality.missingSource} sin fuente · ${account.dataQuality.whatsappSource} quedan atribuidos a WhatsApp.`,
       action:
-        missingSourceRate > 5 || whatsappSourceRate > 70
-          ? 'Validar que las fuentes específicas se asignen antes del fallback WhatsApp.'
-          : 'Cobertura saludable; mantener WhatsApp como fuente por defecto final.',
+        'Validar primer ingreso y atribución por caso: una fuente vacía o WhatsApp no demuestra por sí sola un fallo ni autoriza sobrescribirla.',
       delta: null,
     },
     {
       label: 'Falla de envíos WhatsApp',
       value: formatPercent(account.dataQuality.failedWhatsappRate),
-      tone: diagnosticTone(account.dataQuality.failedWhatsappRate, 5, 12, true),
-      note: 'Tasa sobre mensajes salientes del período; un error no implica que el caso siga abierto.',
+      tone: 'pending',
+      note: 'Corte de salientes WhatsApp de contactos de la cohorte, no de toda la cuenta. Un error no demuestra abandono.',
       action:
-        account.dataQuality.failedWhatsappRate > 5
-          ? 'Investigar plantillas, números y workflows antes de proponer un ajuste.'
-          : 'Conexión operativa sin una señal crítica en este indicador.',
+        'Problema secundario al análisis comercial; investigar recuperación y cobertura antes de afirmar causa o salud de conexión.',
       delta: null,
     },
   ] as const;
@@ -2828,9 +2879,10 @@ function ClientCommercialReading({
 
       <SectionHeader
         kicker="Qué dicen las conversaciones"
-        title="Motivos agrupados para convertir lectura en acción"
-        note="Una oportunidad se asigna al motivo accionable más relevante detectado"
+        title="Interés, calificación y próximo paso comercial"
+        note="Candidatos basados en conversaciones; no diagnósticos definitivos del bot"
       />
+      <CommercialReviewSummary account={reportAccount} />
       <ConversationSegments account={reportAccount} />
 
       <SectionHeader
@@ -2861,6 +2913,12 @@ function InternalOperatingView({ account }: { account: ExtractedAccount }) {
   return (
     <>
       <SectionHeader
+        kicker="Prioridad Sofía"
+        title="Conversaciones que pueden convertirse en una acción"
+        note="Primero intención y calificación; después errores técnicos. No priorizar únicamente por antigüedad."
+      />
+      <CommercialReviewSummary account={account} />
+      <SectionHeader
         kicker="Diagnóstico semanal"
         title="Qué está saludable y qué debemos investigar"
         note={`Comparación contra ${formatShortDate(account.comparison.periodStart)}–${formatShortDate(account.comparison.periodEnd)}, una cohorte de igual duración`}
@@ -2868,7 +2926,7 @@ function InternalOperatingView({ account }: { account: ExtractedAccount }) {
       <WeeklyDiagnosis account={account} />
       <SectionHeader
         kicker="Conversaciones accionables"
-        title="Motivos reales y contactos que los componen"
+        title="Señales comerciales y casos por validar"
         note="Los enlaces abren el registro en GHL; validar contexto antes de cambiar etapas"
       />
       <ConversationSegments account={account} showContacts />
@@ -2881,7 +2939,7 @@ function InternalOperatingView({ account }: { account: ExtractedAccount }) {
       <SectionHeader
         kicker="Acción inmediata"
         title="Contactos concretos para revisar dentro de GHL"
-        note="La selección distribuye los casos entre categorías; el nombre completo se ve al abrir GHL con una sesión autorizada."
+        note="Listado completo de candidatos, sin repetir contactos: visita e interés primero. Cada caso muestra acción, responsable visible, validación y criterio de cierre."
       />
       <ContactActionTable accountName={account.name} />
       <section className="operating-cadence">

@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "extract:ghl": "node scripts/extract-ghl-report-data.mjs",
+    "test:commercial": "node --test scripts/commercial-review.test.mjs scripts/report-contract.test.mjs",
     "lint": "oxlint",
     "format": "oxfmt"
   },

@@ -2,6 +2,10 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseEnv } from 'node:util';
+import {
+  reviewCommercialCase,
+  summarizeCommercialCases,
+} from './commercial-review.mjs';
 
 const config = parseEnv(
   await readFile(new URL('../../.env.local', import.meta.url), 'utf8'),
@@ -43,6 +47,26 @@ const accountDefinitions = [
     locationKey: 'URBANIKA_GHL_LOCATION_ID',
     tokenKeys: ['URBANIKA_GHL_PRIVATE_INTEGRATION_TOKEN'],
   },
+  {
+    name: 'Capital Brokers - WOW 1',
+    locationKey: 'CAPITAL_WOW_GHL_LOCATION_ID',
+    tokenKeys: ['CAPITAL_WOW_GHL_PRIVATE_INTEGRATION_TOKEN'],
+  },
+  {
+    name: 'Terracent',
+    locationKey: 'TERRACENT_GHL_LOCATION_ID',
+    tokenKeys: ['TERRACENT_GHL_PRIVATE_INTEGRATION_TOKEN'],
+  },
+  {
+    name: 'YUD Desarrollos',
+    locationKey: 'YUD_DESARROLLOS_GHL_LOCATION_ID',
+    tokenKeys: ['YUD_DESARROLLOS_GHL_PRIVATE_INTEGRATION_TOKEN'],
+  },
+  {
+    name: 'Bauen',
+    locationKey: 'BAUEN_GHL_LOCATION_ID',
+    tokenKeys: ['BAUEN_GHL_PRIVATE_INTEGRATION_TOKEN'],
+  },
 ];
 
 const timeZone = 'America/Caracas';
@@ -67,7 +91,14 @@ function dateStringInTimezone(date) {
   return `${parts.year}-${parts.month}-${parts.day}`;
 }
 
-const dateParts = datePartsInTimezone(yesterday);
+const cutoffArgument = process.argv
+  .find((a) => a.startsWith('--cutoff='))
+  ?.slice(9);
+if (cutoffArgument && !/^\d{4}-\d{2}-\d{2}$/.test(cutoffArgument))
+  throw new Error('Corte inválido');
+const dateParts = datePartsInTimezone(
+  cutoffArgument ? new Date(`${cutoffArgument}T12:00:00-04:00`) : yesterday,
+);
 const cutoffDate = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 const periodStart = `${dateParts.year}-${dateParts.month}-01`;
 const startTimestamp = Date.parse(`${periodStart}T00:00:00-04:00`);
@@ -92,17 +123,17 @@ const normalize = (value) =>
     .toLowerCase();
 
 const isVisitOrLater = (stageName) =>
-  /visita|cita|reunion|recorrido|negocia|reserva|venta|vendid|cerrad|cliente|escritura/.test(
+  !/perdid|descart|no visita|cancelad|no calificad|descalificad/.test(
+    normalize(stageName),
+  ) &&
+  /visita|cita|reunion|recorrido|negocia|reserva|venta|vendid|cliente|escritura/.test(
     normalize(stageName),
   );
 
 const isQualifiedOrLater = (stageName) =>
-  /calificad|qualified/.test(normalize(stageName)) || isVisitOrLater(stageName);
-
-const isNewLead = (stageName) =>
-  /nuevo lead|lead nuevo|new lead|sin contactar|ingreso/.test(
-    normalize(stageName),
-  );
+  (!/no calificad|descalificad/.test(normalize(stageName)) &&
+    /calificad|qualified/.test(normalize(stageName))) ||
+  isVisitOrLater(stageName);
 
 async function request(token, path, version = 'v3') {
   for (let attempt = 1; attempt <= 5; attempt += 1) {
@@ -114,6 +145,7 @@ async function request(token, path, version = 'v3') {
           Authorization: `Bearer ${token}`,
           Version: version,
         },
+        signal: AbortSignal.timeout(45000),
       },
     );
     const body = await response.json().catch(() => ({}));
@@ -122,9 +154,7 @@ async function request(token, path, version = 'v3') {
       await new Promise((resolve) => setTimeout(resolve, attempt * 800));
       continue;
     }
-    throw new Error(
-      `${path} devolvió ${response.status}: ${body.message || 'sin detalle'}`,
-    );
+    throw new Error(`Lectura GHL devolvió HTTP ${response.status}`);
   }
   throw new Error(`No se pudo completar ${path}.`);
 }
@@ -151,39 +181,93 @@ async function listOpportunities(token, locationId, pipelines) {
       for (const opportunity of batch) {
         collected.set(opportunity.id, opportunity);
       }
-      const total = Number(data.meta?.total || data.total || pipelineCount);
-      if (!batch.length || batch.length < 100 || pipelineCount >= total) break;
+      const rawTotal = data.meta?.total ?? data.total;
+      const total = rawTotal == null ? null : Number(rawTotal);
+      if (
+        !batch.length ||
+        batch.length < 100 ||
+        (total != null && pipelineCount >= total)
+      ) {
+        if (total != null && pipelineCount < total)
+          throw new Error('Oportunidades: paginación incompleta');
+        break;
+      }
+      if (page === 100)
+        throw new Error('Oportunidades: límite de páginas alcanzado');
     }
   }
   return [...collected.values()];
 }
 
-async function listMessages(token, locationId) {
-  const messages = [];
-  let cursor;
-
-  for (let page = 1; page <= 100; page += 1) {
-    const query = new URLSearchParams({
-      locationId,
-      limit: '1000',
-      sortBy: 'createdAt',
-      sortOrder: 'asc',
-      startDate: new Date(startTimestamp).toISOString(),
-      endDate: new Date(endTimestamp).toISOString(),
-    });
-    if (cursor) query.set('cursor', cursor);
-
-    const data = await request(
-      token,
-      `/conversations/messages/export?${query.toString()}`,
-    );
-    const batch = data.messages || [];
-    messages.push(...batch);
-    cursor = data.nextCursor;
-    if (!cursor || !batch.length) break;
+async function readContactContext(token, locationId, contactId) {
+  const safe = async (path) => {
+    try {
+      return { ok: true, data: await request(token, path) };
+    } catch {
+      return { ok: false, data: {} };
+    }
+  };
+  const id = encodeURIComponent(contactId);
+  const [search, contact, notes, tasks, appointments] = await Promise.all([
+    safe(
+      `/conversations/search?${new URLSearchParams({ locationId, contactId, limit: '100' })}`,
+    ),
+    safe(`/contacts/${id}`),
+    safe(`/contacts/${id}/notes`),
+    safe(`/contacts/${id}/tasks`),
+    safe(`/contacts/${id}/appointments`),
+  ]);
+  const messages = new Map();
+  const conversations = search.data.conversations || [];
+  let complete =
+    search.ok &&
+    (search.data.total == null ||
+      Number(search.data.total) <= conversations.length);
+  for (const conversation of conversations) {
+    let lastMessageId;
+    let done = false;
+    for (let page = 0; page < 100; page++) {
+      const q = new URLSearchParams({ limit: '100' });
+      if (lastMessageId) q.set('lastMessageId', lastMessageId);
+      const r = await safe(
+        `/conversations/${encodeURIComponent(conversation.id)}/messages?${q}`,
+      );
+      if (!r.ok) {
+        complete = false;
+        break;
+      }
+      const block = r.data.messages;
+      const batch = Array.isArray(block) ? block : block?.messages || [];
+      const before = messages.size;
+      for (const m of batch) if (m.id) messages.set(m.id, m);
+      if (!block?.nextPage) {
+        done = true;
+        break;
+      }
+      const cursor = block.lastMessageId || batch.at(-1)?.id;
+      if (!cursor || cursor === lastMessageId || messages.size === before) {
+        complete = false;
+        break;
+      }
+      lastMessageId = cursor;
+    }
+    if (!done) complete = false;
   }
-
-  return messages;
+  return {
+    messages: [...messages.values()],
+    contact: contact.data.contact || {},
+    notes: notes.data.notes || [],
+    tasks: tasks.data.tasks || [],
+    appointments: appointments.data.events || [],
+    coverage: {
+      messages: complete,
+      contact: contact.ok,
+      notes: notes.ok,
+      tasks: tasks.ok,
+      appointments: appointments.ok,
+    },
+    conversations: conversations.length,
+  };
 }
 
 function countBy(values) {
@@ -197,110 +281,6 @@ function countBy(values) {
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 }
 
-function protectedContactLabel(contactId) {
-  return `Contacto …${String(contactId).slice(-6)}`;
-}
-
-const actionDefinitions = [
-  {
-    key: 'visit_without_followup',
-    label: 'Visita solicitada sin seguimiento',
-    owner: 'EQUIPO COMERCIAL',
-    priority: 'P0',
-    criteria:
-      'El contacto expresó intención de coordinar una visita y no se detectó una respuesta humana posterior.',
-    action:
-      'Abrir el contacto, confirmar disponibilidad y ofrecer dos horarios concretos.',
-  },
-  {
-    key: 'inbound_without_reply',
-    label: 'Entrante sin respuesta +30 min',
-    owner: 'EQUIPO COMERCIAL',
-    priority: 'P0',
-    criteria:
-      'El último mensaje útil es entrante y no existe una respuesta saliente exitosa posterior dentro del SLA.',
-    action: 'Responder, reasignar o cerrar con un motivo documentado.',
-  },
-  {
-    key: 'whatsapp_failed',
-    label: 'Falla de WhatsApp sin recuperar',
-    owner: 'PIXEL',
-    priority: 'P0',
-    criteria:
-      'Se detectó un envío de WhatsApp fallido o no entregado sin un envío exitoso posterior.',
-    action:
-      'Revisar número, canal, plantilla y workflow; reintentar por un canal válido.',
-  },
-  {
-    key: 'no_successful_outbound',
-    label: 'Sin primer saliente exitoso',
-    owner: 'PIXEL',
-    priority: 'P1',
-    criteria:
-      'La oportunidad tiene más de 30 minutos y no registra un mensaje saliente exitoso.',
-    action: 'Revisar teléfono, workflow, webhook y estado de entrega.',
-  },
-  {
-    key: 'automation_only',
-    label: 'Solo automatización',
-    owner: 'PIXEL',
-    priority: 'P1',
-    criteria:
-      'Hay mensajes salientes, pero todos provienen de workflow, campaña o acciones masivas.',
-    action:
-      'Validar el disparador de handoff y la intervención humana esperada.',
-  },
-  {
-    key: 'qualification_mismatch',
-    label: 'Posible error de calificación del bot',
-    owner: 'PIXEL',
-    priority: 'P1',
-    criteria:
-      'Hay una señal comercial relevante en la conversación, pero la oportunidad continúa en una etapa inicial.',
-    action:
-      'Validar la conversación y la nota del bot; corregir etapa o ajustar el criterio de calificación.',
-  },
-  {
-    key: 'no_response_after_attempts',
-    label: 'Sin respuesta después de 3+ intentos',
-    owner: 'EQUIPO COMERCIAL',
-    priority: 'P2',
-    criteria:
-      'Se registran al menos tres salientes exitosos y ningún mensaje entrante del contacto.',
-    action:
-      'Cerrar la secuencia, mover a no responde o descarte según el criterio acordado y registrar el motivo.',
-  },
-  {
-    key: 'stale_initial',
-    label: 'Lead estancado en etapa inicial',
-    owner: 'EQUIPO COMERCIAL',
-    priority: 'P2',
-    criteria:
-      'La oportunidad permanece al menos siete días en una etapa inicial sin otra señal prioritaria.',
-    action: 'Revisar el caso, actualizar la etapa y registrar el motivo.',
-  },
-  {
-    key: 'unassigned',
-    label: 'Oportunidad sin responsable visible',
-    owner: 'EQUIPO COMERCIAL',
-    priority: 'P2',
-    criteria: 'La oportunidad no tiene un responsable visible en el extracto.',
-    action: 'Asignar responsable y fecha de próxima gestión.',
-  },
-  {
-    key: 'source_missing',
-    label: 'Fuente sin clasificar',
-    owner: 'PIXEL',
-    priority: 'P2',
-    criteria: 'La oportunidad no tiene una fuente de adquisición registrada.',
-    action: 'Revisar atribución, formulario y automatización de origen.',
-  },
-];
-
-const actionDefinitionByKey = new Map(
-  actionDefinitions.map((definition) => [definition.key, definition]),
-);
-const automatedSources = new Set(['workflow', 'campaign', 'bulk_actions']);
 const failedStatuses = new Set([
   'failed',
   'undelivered',
@@ -308,47 +288,6 @@ const failedStatuses = new Set([
   'canceled',
   'cancelled',
 ]);
-const visitSignal =
-  /\b(visita|visitar|conocer|recorrer|reunion|agendar|coordinar|turno|cita|dia|hora|horario)\b/;
-const commercialSignal =
-  /\b(precio|valor|cuota|anticipo|financiacion|financiar|disponibilidad|disponible|tipologia|ambiente|metros|m2|inversion|invertir|entrega|posesion)\b/;
-const readyProductSignal =
-  /\b(entrega inmediata|listo para|terminado|terminada|mudanza inmediata|para mudarme ya|posesion inmediata)\b/;
-const priceSignal =
-  /\b(precio|valor|cuota|anticipo|financiacion|financiar|presupuesto|caro|costoso)\b/;
-
-const conversationSegmentDefinitions = [
-  {
-    key: 'active_interest',
-    label: 'Interés activo sin próximo paso',
-    owner: 'EQUIPO COMERCIAL',
-    action: 'Contactar y acordar una próxima acción concreta.',
-  },
-  {
-    key: 'ready_product',
-    label: 'Busca producto listo o entrega inmediata',
-    owner: 'EQUIPO COMERCIAL',
-    action: 'Enviar opciones disponibles que respondan a esa condición.',
-  },
-  {
-    key: 'price_financing',
-    label: 'Consulta u objeción de precio/financiación',
-    owner: 'EQUIPO COMERCIAL',
-    action: 'Responder con propuesta, alternativas y condiciones vigentes.',
-  },
-  {
-    key: 'no_response',
-    label: 'Sin respuesta luego de varios intentos',
-    owner: 'EQUIPO COMERCIAL',
-    action: 'Cerrar la secuencia y ordenar la etapa con motivo.',
-  },
-  {
-    key: 'technical_failure',
-    label: 'Falla técnica de contacto',
-    owner: 'PIXEL',
-    action: 'Revisar canal, número, plantilla y automatización.',
-  },
-];
 
 function messageTimestamp(message) {
   return Date.parse(message.dateAdded || message.createdAt || '');
@@ -360,278 +299,6 @@ function isOutbound(message) {
 
 function isInbound(message) {
   return normalize(message.direction) === 'inbound';
-}
-
-function isSuccessfulOutbound(message) {
-  return isOutbound(message) && !failedStatuses.has(normalize(message.status));
-}
-
-function isHumanOutbound(message) {
-  if (!isSuccessfulOutbound(message)) return false;
-  const source = normalize(message.source);
-  return (
-    !automatedSources.has(source) &&
-    (Boolean(message.userId) || Boolean(source))
-  );
-}
-
-function hasSignal(message, expression) {
-  return isInbound(message) && expression.test(normalize(message.body));
-}
-
-function minutesUntilCutoff(message) {
-  const timestamp = messageTimestamp(message);
-  return Number.isFinite(timestamp)
-    ? Math.max(0, Math.floor((endTimestamp - timestamp) / 60_000))
-    : 0;
-}
-
-function createAction(opportunity, stageName, locationId, key, evidence) {
-  const contactId = opportunity.contactId || opportunity.contact?.id;
-  if (!contactId) return null;
-  const definition = actionDefinitionByKey.get(key);
-  if (!definition) return null;
-
-  return {
-    contactName: protectedContactLabel(contactId),
-    category: key,
-    problem: definition.label,
-    evidence,
-    owner: definition.owner,
-    priority: definition.priority,
-    ghlUrl: `https://app.gohighlevel.com/v2/location/${locationId}/contacts/detail/${contactId}`,
-  };
-}
-
-function actionForOpportunity(opportunity, stageName, locationId, messages) {
-  const createdAt = Date.parse(opportunity.createdAt || '');
-  const ageMinutes = Number.isFinite(createdAt)
-    ? Math.max(0, Math.floor((endTimestamp - createdAt) / 60_000))
-    : 0;
-  const ageDays = Math.floor(ageMinutes / 1_440);
-  const sortedMessages = [...messages]
-    .filter((message) => Number.isFinite(messageTimestamp(message)))
-    .sort((a, b) => messageTimestamp(a) - messageTimestamp(b));
-  const successfulOutbounds = sortedMessages.filter(isSuccessfulOutbound);
-  const humanOutbounds = sortedMessages.filter(isHumanOutbound);
-  const latestInbound = [...sortedMessages].reverse().find(isInbound);
-  const laterHumanReply = (signalMessage) =>
-    humanOutbounds.some(
-      (message) => messageTimestamp(message) > messageTimestamp(signalMessage),
-    );
-
-  const visitMessage = [...sortedMessages]
-    .reverse()
-    .find((message) => hasSignal(message, visitSignal));
-  if (
-    visitMessage &&
-    minutesUntilCutoff(visitMessage) >= 30 &&
-    !laterHumanReply(visitMessage)
-  ) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'visit_without_followup',
-      `Pedido de visita sin respuesta humana posterior · etapa: ${stageName}`,
-    );
-  }
-
-  if (
-    latestInbound &&
-    minutesUntilCutoff(latestInbound) >= 30 &&
-    !successfulOutbounds.some(
-      (message) => messageTimestamp(message) > messageTimestamp(latestInbound),
-    )
-  ) {
-    const waitHours = Math.max(
-      1,
-      Math.floor(minutesUntilCutoff(latestInbound) / 60),
-    );
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'inbound_without_reply',
-      `${waitHours} h sin respuesta saliente posterior · etapa: ${stageName}`,
-    );
-  }
-
-  const failedWhatsApp = [...sortedMessages]
-    .reverse()
-    .find(
-      (message) =>
-        isOutbound(message) &&
-        normalize(message.messageType).includes('whatsapp') &&
-        failedStatuses.has(normalize(message.status)),
-    );
-  if (
-    failedWhatsApp &&
-    !successfulOutbounds.some(
-      (message) => messageTimestamp(message) > messageTimestamp(failedWhatsApp),
-    )
-  ) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'whatsapp_failed',
-      `Último WhatsApp sin entrega recuperada · etapa: ${stageName}`,
-    );
-  }
-
-  if (ageMinutes >= 30 && !successfulOutbounds.length) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'no_successful_outbound',
-      `${ageDays || '<1'} días desde el alta · sin saliente exitoso`,
-    );
-  }
-
-  const signalMessage = [...sortedMessages]
-    .reverse()
-    .find((message) => hasSignal(message, commercialSignal));
-  if (signalMessage && isNewLead(stageName)) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'qualification_mismatch',
-      `Señal comercial detectable · continúa en ${stageName}`,
-    );
-  }
-
-  if (successfulOutbounds.length >= 3 && !sortedMessages.some(isInbound)) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'no_response_after_attempts',
-      `${successfulOutbounds.length} salientes exitosos · ningún entrante`,
-    );
-  }
-
-  if (
-    successfulOutbounds.length &&
-    successfulOutbounds.every((message) =>
-      automatedSources.has(normalize(message.source)),
-    )
-  ) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'automation_only',
-      `${successfulOutbounds.length} salientes automáticos · sin intervención humana visible`,
-    );
-  }
-
-  return fallbackAction(opportunity, stageName, locationId, ageDays);
-}
-
-function conversationSegmentForOpportunity(
-  opportunity,
-  stageName,
-  locationId,
-  messages,
-) {
-  const contactId = opportunity.contactId || opportunity.contact?.id;
-  if (!contactId) return null;
-  const ordered = [...messages]
-    .filter((message) => Number.isFinite(messageTimestamp(message)))
-    .sort((a, b) => messageTimestamp(a) - messageTimestamp(b));
-  const inbounds = ordered.filter(isInbound);
-  const successfulOutbounds = ordered.filter(isSuccessfulOutbound);
-  const failedWhatsApp = ordered.some(
-    (message) =>
-      isOutbound(message) &&
-      normalize(message.messageType).includes('whatsapp') &&
-      failedStatuses.has(normalize(message.status)),
-  );
-  let key;
-
-  if (inbounds.some((message) => hasSignal(message, readyProductSignal))) {
-    key = 'ready_product';
-  } else if (inbounds.some((message) => hasSignal(message, priceSignal))) {
-    key = 'price_financing';
-  } else if (
-    isNewLead(stageName) &&
-    inbounds.some(
-      (message) =>
-        hasSignal(message, commercialSignal) || hasSignal(message, visitSignal),
-    )
-  ) {
-    key = 'active_interest';
-  } else if (successfulOutbounds.length >= 3 && !inbounds.length) {
-    key = 'no_response';
-  } else if (failedWhatsApp) {
-    key = 'technical_failure';
-  } else {
-    return null;
-  }
-
-  return {
-    key,
-    contactName: protectedContactLabel(contactId),
-    ghlUrl: `https://app.gohighlevel.com/v2/location/${locationId}/contacts/detail/${contactId}`,
-  };
-}
-
-function fallbackAction(opportunity, stageName, locationId, ageDays) {
-  const source = String(opportunity.source || '').trim();
-  const assignedTo = opportunity.assignedTo || opportunity.contact?.assignedTo;
-
-  if (isNewLead(stageName) && ageDays >= 7) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'stale_initial',
-      `${ageDays} días desde el alta · etapa actual: ${stageName}`,
-    );
-  }
-  if (!assignedTo) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'unassigned',
-      `Sin responsable visible · etapa actual: ${stageName}`,
-    );
-  }
-  if (!source) {
-    return createAction(
-      opportunity,
-      stageName,
-      locationId,
-      'source_missing',
-      `Sin fuente registrada · etapa actual: ${stageName}`,
-    );
-  }
-  return null;
-}
-
-function selectDiverseActions(candidates, limit = 8) {
-  const buckets = new Map(actionDefinitions.map(({ key }) => [key, []]));
-  for (const candidate of candidates) {
-    buckets.get(candidate.category)?.push(candidate);
-  }
-
-  const selected = [];
-  for (let round = 0; selected.length < limit; round += 1) {
-    let added = false;
-    for (const definition of actionDefinitions) {
-      const candidate = buckets.get(definition.key)?.[round];
-      if (!candidate) continue;
-      selected.push(candidate);
-      added = true;
-      if (selected.length >= limit) break;
-    }
-    if (!added) break;
-  }
-  return selected;
 }
 
 async function extractAccount(definition) {
@@ -663,25 +330,6 @@ async function extractAccount(definition) {
     locationId,
     pipelines,
   );
-  let messages = [];
-  let messageAccess = true;
-  try {
-    messages = await listMessages(token, locationId);
-    if (!messages.length && allOpportunities.length) {
-      await new Promise((resolve) => setTimeout(resolve, 1_000));
-      messages = await listMessages(token, locationId);
-    }
-  } catch (error) {
-    messageAccess = false;
-    console.warn(`\n  Mensajes no disponibles: ${error.message}`);
-  }
-  const messagesByContact = new Map();
-  for (const message of messages) {
-    if (!message.contactId) continue;
-    const contactMessages = messagesByContact.get(message.contactId) || [];
-    contactMessages.push(message);
-    messagesByContact.set(message.contactId, contactMessages);
-  }
   const cohort = allOpportunities.filter((opportunity) => {
     const timestamp = Date.parse(opportunity.createdAt || '');
     return (
@@ -719,37 +367,57 @@ async function extractAccount(definition) {
   const comparisonVisitOrLater = comparisonEnriched.filter((item) =>
     isVisitOrLater(item.stageName),
   ).length;
-  const candidates = enriched
-    .map((item) => {
-      const contactId = item.contactId || item.contact?.id;
-      const createdAt = Date.parse(item.createdAt || '');
-      const ageDays = Number.isFinite(createdAt)
-        ? Math.max(0, Math.floor((endTimestamp - createdAt) / 86_400_000))
-        : 0;
-      return messageAccess
-        ? actionForOpportunity(
-            item,
-            item.stageName,
-            locationId,
-            messagesByContact.get(contactId) || [],
-          )
-        : fallbackAction(item, item.stageName, locationId, ageDays);
-    })
-    .filter(Boolean);
-  const actions = selectDiverseActions(candidates);
-  const categoryCounts = new Map();
-  for (const candidate of candidates) {
-    categoryCounts.set(
-      candidate.category,
-      (categoryCounts.get(candidate.category) || 0) + 1,
-    );
-  }
-  const actionBreakdown = actionDefinitions
-    .map((definition) => ({
-      ...definition,
-      count: categoryCounts.get(definition.key) || 0,
-    }))
-    .filter((item) => item.count > 0);
+  const contexts = new Map();
+  const contactIds = [
+    ...new Set(
+      enriched.map((o) => o.contactId || o.contact?.id).filter(Boolean),
+    ),
+  ];
+  let index = 0;
+  await Promise.all(
+    Array.from({ length: 2 }, async () => {
+      while (index < contactIds.length) {
+        const id = contactIds[index++];
+        contexts.set(id, await readContactContext(token, locationId, id));
+        if (contexts.size % 25 === 0)
+          console.log(
+            `  ${definition.name}: ${contexts.size}/${contactIds.length} historiales consultados`,
+          );
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+    }),
+  );
+  const cases = enriched
+    .filter((o) => contexts.has(o.contactId || o.contact?.id))
+    .map((o) => {
+      const id = o.contactId || o.contact?.id;
+      return reviewCommercialCase({
+        opportunity: o,
+        stageName: o.stageName,
+        locationId,
+        ...contexts.get(id),
+        cutoff: endTimestamp,
+        multipleOpportunities:
+          allOpportunities.filter(
+            (other) => (other.contactId || other.contact?.id) === id,
+          ).length > 1,
+      });
+    });
+  const { actions, actionBreakdown, conversationSegments, commercialReview } =
+    summarizeCommercialCases(cases);
+  const uniqueMessages = new Map();
+  for (const context of contexts.values())
+    for (const m of context.messages)
+      if (
+        m.id &&
+        messageTimestamp(m) >= startTimestamp &&
+        messageTimestamp(m) <= endTimestamp
+      )
+        uniqueMessages.set(m.id, m);
+  const messages = [...uniqueMessages.values()];
+  const messageAccess = [...contexts.values()].every(
+    (c) => c.coverage.messages,
+  );
   const inboundMessages = messages.filter(isInbound);
   const outboundMessages = messages.filter(isOutbound);
   const failedWhatsAppCount = outboundMessages.filter(
@@ -757,32 +425,6 @@ async function extractAccount(definition) {
       normalize(message.messageType).includes('whatsapp') &&
       failedStatuses.has(normalize(message.status)),
   ).length;
-  const conversationSegmentCandidates = enriched
-    .map((item) => {
-      const contactId = item.contactId || item.contact?.id;
-      return conversationSegmentForOpportunity(
-        item,
-        item.stageName,
-        locationId,
-        messagesByContact.get(contactId) || [],
-      );
-    })
-    .filter(Boolean);
-  const conversationSegments = conversationSegmentDefinitions
-    .map((definition) => {
-      const contacts = conversationSegmentCandidates.filter(
-        (candidate) => candidate.key === definition.key,
-      );
-      return {
-        ...definition,
-        count: contacts.length,
-        contacts: contacts.slice(0, 8).map(({ contactName, ghlUrl }) => ({
-          contactName,
-          ghlUrl,
-        })),
-      };
-    })
-    .filter((segment) => segment.count > 0);
   const missingSource = enriched.filter(
     (item) => !String(item.source || '').trim(),
   ).length;
@@ -816,7 +458,7 @@ async function extractAccount(definition) {
     conversationSummary: {
       available: messageAccess,
       messages: messages.length,
-      contacts: messagesByContact.size,
+      contacts: contexts.size,
       inbound: inboundMessages.length,
       outbound: outboundMessages.length,
       failedWhatsApp: failedWhatsAppCount,
@@ -825,13 +467,20 @@ async function extractAccount(definition) {
       missingSource,
       whatsappSource,
       unassigned,
-      failedWhatsappRate: outboundMessages.length
-        ? (failedWhatsAppCount / outboundMessages.length) * 100
+      failedWhatsappRate: outboundMessages.filter((m) =>
+        normalize(m.messageType || m.type).includes('whatsapp'),
+      ).length
+        ? (failedWhatsAppCount /
+            outboundMessages.filter((m) =>
+              normalize(m.messageType || m.type).includes('whatsapp'),
+            ).length) *
+          100
         : 0,
     },
     conversationSegments,
     actionBreakdown,
     actions,
+    commercialReview,
   };
 }
 
@@ -854,7 +503,7 @@ const payload = {
   comparisonEnd,
   timeZone,
   methodology:
-    'Cohorte de oportunidades creadas durante el mes hasta el cierre de ayer; la etapa mostrada es la etapa actual al momento de la extracción.',
+    'Cohorte mensual hasta el corte; etapas actuales al consultar. Conversaciones directas paginadas, notas/tareas/citas por contacto. Señales conservadoras priorizan interés y posible desajuste; no demuestran error del bot. Mensajes y tasa limitados a contactos de la cohorte, no a toda la cuenta. Sin modificaciones productivas.',
   accounts,
 };
 
